@@ -23,7 +23,7 @@ const toolbar = (props) => (
                                 My Beer List
                             </NavItem>
                         </LinkContainer>
-                        <LinkContainer to="/topics">
+                        <LinkContainer to="/NewBeer">
                             <NavItem eventKey={2} onClick={props.newBeer}>
                                 New Beer
                             </NavItem>
