@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import './BeerRating.css'
-import Dialog from '../../components/UI/Modal/Dialog';
-import { Modal, Button } from 'react-bootstrap';
-import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+//import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
 
-import Welcome from '../../containers/Welcome/Welcome';
 import NewBeer from '../../components/Beers/NewBeer/NewBeer';
 import Beers from '../../components/Beers/Beers';
+import { Button } from 'react-bootstrap';
+import Dialog from '../../components/UI/Modal/Dialog';
+import Beer from '../../components/Beers/Beer/Beer';
 
 
 class BeerRating extends Component {
@@ -23,43 +22,138 @@ class BeerRating extends Component {
                 , description: 'No description available'
                 , image: 'http://www.dbexportbeer.co.nz/DBExport/media/DB-Export/Our%20Beer/Export%20Gold/export-gold-bottle.png'
             },
-            { id: 2, name: 'Han Shot First', brewedBy: 'Evil Genius Beer Company', style: 'Imperial or Double India Pale Ale', description: 'No description available', image: null },
-            { id: 3, name: 'Hellion', brewedBy: 'Gigantic Brewing Company', style: 'Other Belgian-Style Ales', description: 'No description available', image: null },
-            { id: 4, name: 'Iron Maiden Trooper', brewedBy: 'Robinsons Brewery', style: 'Classic English-Style Pale Ale', description: 'No description available', image: null },
-            { id: 5, name: '666 Aged Ale', brewedBy: 'Diamond Knot Brewery & Alehouse', style: 'Wood- and Barrel-Aged Beer', description: 'No description available', image: null },
+            {
+                id: 2,
+                name: 'Han Shot First',
+                brewedBy: 'Evil Genius Beer Company',
+                style: 'Imperial or Double India Pale Ale',
+                description: 'No description available',
+                image: null
+            },
+            {
+                id: 3,
+                name: 'Hellion',
+                brewedBy: 'Gigantic Brewing Company',
+                style: 'Other Belgian-Style Ales',
+                description: 'No description available',
+                image: null
+            },
+            {
+                id: 4,
+                name: 'Iron Maiden Trooper',
+                brewedBy: 'Robinsons Brewery',
+                style: 'Classic English-Style Pale Ale',
+                description: 'No description available',
+                image: null
+            },
+            {
+                id: 5,
+                name: '666 Aged Ale',
+                brewedBy: 'Diamond Knot Brewery & Alehouse',
+                style: 'Wood- and Barrel-Aged Beer',
+                description: 'No description available',
+                image: null
+            },
         ],
-        newBeer: [{
+        newBeer: {
             id: null,
             name: null
             , brewedBy: null
             , style: null
             , description: null
             , image: null
-        }],
-        addingNewBeer: false
+        },
+        addingNewBeer: false,
+        showBeerDetail: false,
+        modal: {
+            title: null,
+            body: null,
+        }
     }
 
 
     //#region Handlers
 
-    addBeerHandler = () => {
+    cleanNewBeerState() {
 
-        console.log('[BeerRating.js addBeerHandler()] ');
+        let newBeer = [...this.state.newBeer];
 
-        let addingNewBeer = true;
+        newBeer.id = null;
+        newBeer.name = null;
+        newBeer.brewedBy = null;
+        newBeer.style = null;
+        newBeer.description = null;
+        newBeer.image = null;
 
-        this.setState({ addingNewBeer: addingNewBeer });
+        this.setState({ newBeer: newBeer, addingNewBeer: false });
 
-        addingNewBeer = false;
+        //console.log('[BeerRating.js cleanNewBeerState()] ', newBeer);
 
     }
 
-    editBeerHandler = (beerIndex) => {
+    showAddBeerFormHandler = () => {
+        this.setState({ addingNewBeer: true });
+    }
 
-        const beer = this.state.listOfBeers[beerIndex];
+    addBeerHandler = () => {
 
-        //alert('Hey! Clicou na beer ' + beer.name );
-        //<Dialog showModal={true} />
+        this.setState({ addingNewBeer: true });
+
+        let newBeer = [...this.state.newBeer];
+
+        newBeer.id = [...this.state.listOfBeers].length + 1;
+        newBeer.name = this.state.newBeer.name;
+        newBeer.brewedBy = this.state.newBeer.brewedBy;
+        newBeer.style = this.state.newBeer.style;
+        newBeer.description = this.state.newBeer.description;
+        newBeer.image = null;
+
+        //console.log('[BeerRating.js addBeerHandler()] ', newBeer);
+
+        const listOfBeers = [...this.state.listOfBeers];
+
+        listOfBeers.push(newBeer);
+
+        this.setState({ listOfBeers: listOfBeers });
+
+        this.cleanNewBeerState();
+
+        //console.log('[BeerRating.js addBeerHandler()] ', newBeer);
+
+
+    }
+
+    hideModalHandler = () => {
+        this.setState({ showBeerDetail: false, addingNewBeer: false })
+
+    }
+
+    showBeerDetailsHandler = (beerIndex) => {
+
+        //console.log('[BeerRating.js] showBeerDetailsHandler() index:', beerIndex);
+
+        this.setState({ showBeerDetail: true })
+
+        const beer = { ...this.state.listOfBeers[beerIndex] };
+
+        //console.log('[BeerRating.js] showBeerDetailsHandler() index:', beer);
+
+        const modal = {
+            title: beer.name,
+            body: (
+                <Beer
+                    key={beer.id}
+                    name={beer.name}
+                    brewedBy={beer.brewedBy}
+                    style={beer.style}
+                    description={beer.description}
+                    image={beer.image}
+                />
+            ),
+        };
+
+
+        this.setState({ modal: modal });
 
     };
 
@@ -76,32 +170,60 @@ class BeerRating extends Component {
 
     render() {
 
+        //console.log('[BeerRating.js] render()', this.state.showBeerDetail);
 
-        console.log('[BeerRating.js] render()', this.state);
+        const beers = (<Beers listOfBeers={this.state.listOfBeers} clicked={this.showBeerDetailsHandler} />);
+        let newBeer = null;
+        let modal = null;
+
+        /*if (this.state.addingNewBeer) {
+            newBeer = (<NewBeer newBeer={this.state.newBeer} clicked={this.addBeerHandler} />);
+        }*/
+
+        if (this.state.addingNewBeer) {
+            newBeer = (
+
+
+                <Dialog
+                    show={this.state.addingNewBeer}
+                    modalClosed={this.hideModalHandler}
+                    title="New beer"
+                >
+
+                    <NewBeer
+                        newBeer={this.state.newBeer}
+                        clicked={this.addBeerHandler}
+                    />
+
+                </Dialog>
+
+            );
+        }
+
+        if (this.state.showBeerDetail) {
+
+            modal = (
+                <Dialog
+                    show={this.state.showBeerDetail}
+                    modalClosed={this.hideModalHandler}
+                    title={this.state.modal.title}
+                >
+                    {this.state.modal.body}
+                </Dialog>
+            );
+
+        }
 
         return (
-
             <div>
-
-                <Router>
-                    <div>
-                        <Toolbar />
-                        <Route exact path="/" component={Welcome} />
-                        <Route path="/MyBeers" render={() => <Beers listOfBeers={this.state.listOfBeers} />} />
-                        <Route
-                            path="/NewBeer"
-                            render={
-                                (event) => <NewBeer
-                                    listOfBeers={this.state.listOfBeers}
-                                    addBeerClick={this.addBeerHandler}
-                                    newBeer={this.state.newBeer}
-                                />
-                            }
-                        />
-                    </div>
-                </Router>
+                <Button onClick={this.showAddBeerFormHandler}>Add beer</Button>
+                <hr />
+                {newBeer}
+                {beers}
+                {modal}
 
             </div>
+
         );
 
     };

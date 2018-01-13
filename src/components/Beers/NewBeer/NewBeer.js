@@ -14,8 +14,8 @@ class NewBeer extends Component {
                 state[e.target.name] = e.target.value;
                 this.setState(state);
         */
-
-        const newBeer = this.props.newBeer[0];
+        console.log('[NewBeer.js onChange()] ', e.target.name, e.target.value);
+        const newBeer = this.props.newBeer;
 
         newBeer[e.target.name] = e.target.value;
 
@@ -24,24 +24,26 @@ class NewBeer extends Component {
 
     }
 
-    onAddBeer = () => {
+    onAddBeer = (newBeer) => {
 
         const newBeerID = [...this.props.listOfBeers].length + 1;
 
-        this.props.newBeer[0].id = newBeerID
+        this.props.newBeer.id = newBeerID
 
-        console.log('[NewBeer.js onAddBeer()] before push', this.props.newBeer[0]);
+        console.log('[NewBeer.js onAddBeer()] this.props.newBeer[0]', this.props.newBeer);
+        console.log('[NewBeer.js onAddBeer()] newBeer', newBeer);
 
-        this.props.listOfBeers.push(...this.props.newBeer[0]);
+        newBeer = [this.props.newBeer];
 
-        console.log('[NewBeer.js onAddBeer()] after push', this.props.newBeer[0]);
+        console.log('[NewBeer.js onAddBeer()] this.props.newBeer[0]', this.props.newBeer);
+        console.log('[NewBeer.js onAddBeer()] newBeer', newBeer);
 
     }
 
 
     render() {
 
-        console.log('[NewBeer.js render()] ', this.props);
+        //console.log('[NewBeer.js render()] ', this.props);
 
         return (
             <Form horizontal >
@@ -69,7 +71,7 @@ class NewBeer extends Component {
                             type="text"
                             name="brewedBy"
                             placeholder="Brewed by..."
-                            value={this.props.name}
+                            value={this.props.brewedBy}
                             onChange={this.onChange} />
                     </Col>
                 </FormGroup>
@@ -83,7 +85,7 @@ class NewBeer extends Component {
                             type="text"
                             name="style"
                             placeholder="Beer style"
-                            value={this.props.name}
+                            value={this.props.beerStyle}
                             onChange={this.onChange} />
                     </Col>
                 </FormGroup>
@@ -96,15 +98,15 @@ class NewBeer extends Component {
                         <FormControl
                             type="textarea"
                             name="description"
-                            placeholder="Description...."
-                            value={this.props.name}
+                            placeholder="Description..."
+                            value={this.props.beerDescription}
                             onChange={this.onChange} />
                     </Col>
                 </FormGroup>
 
                 <FormGroup>
                     <Col smOffset={2} sm={4}>
-                        <Button onClick={this.onAddBeer} >Save</Button>
+                        <Button onClick={this.props.clicked}>Save</Button>
                     </Col>
                 </FormGroup>
 

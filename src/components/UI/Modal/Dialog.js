@@ -1,52 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-class Dialog extends Component {
+const dialog = (props) => (
 
-    constructor(props, context) {
-        super(props, context);
+    <div>
 
-        this.state = {
-            showModal: false
-        };
+        <Modal show={props.show} onHide={props.modalClosed}>
+            <Modal.Header closeButton>
+                <Modal.Title>{props.title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {props.children}
+            </Modal.Body>
+            <Modal.Footer>
+                <Button onClick={props.modalClosed}>Close</Button>
+            </Modal.Footer>
+        </Modal>
 
-        this.open = this.open.bind(this);
-        this.close = this.close.bind(this);
-    }
+    </div>
 
-    open() {
-        this.setState({ showModal: true });
-    }
-
-    close() {
-        this.setState({ showModal: false });
-    }
-
-    render() {
-        return (
-            <div>
-
-                <div onClick={this.open}>
-                    {this.props.children}
-                </div>
-
-                <Modal show={this.state.showModal} onHide={this.close}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{this.props.beer.name}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {this.props.children}
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button onClick={this.close}>Close</Button>
-                    </Modal.Footer>
-                </Modal>
+);
 
 
-
-            </div>
-        );
-    }
-}
-
-export default Dialog;
+export default dialog;
