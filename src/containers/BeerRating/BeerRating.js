@@ -28,7 +28,15 @@ class BeerRating extends Component {
             { id: 4, name: 'Iron Maiden Trooper', brewedBy: 'Robinsons Brewery', style: 'Classic English-Style Pale Ale', description: 'No description available', image: null },
             { id: 5, name: '666 Aged Ale', brewedBy: 'Diamond Knot Brewery & Alehouse', style: 'Wood- and Barrel-Aged Beer', description: 'No description available', image: null },
         ],
-        newBeer: null,
+        newBeer: [{
+            id: null,
+            name: null
+            , brewedBy: null
+            , style: null
+            , description: null
+            , image: null
+        }],
+        addingNewBeer: false
     }
 
 
@@ -36,28 +44,13 @@ class BeerRating extends Component {
 
     addBeerHandler = () => {
 
+        console.log('[BeerRating.js addBeerHandler()] ');
 
+        let addingNewBeer = true;
 
-        //console.log('[BeerRating.js addBeerHandler()] ', event);
+        this.setState({ addingNewBeer: addingNewBeer });
 
-        const listOfBeers = [...this.state.listOfBeers];
-
-        const newBeerID = listOfBeers.length + 1;
-
-        /*
-        const newBeer2 = {
-            id: newBeerID,
-            name: newBeer.name
-            , brewedBy: newBeer.brewedBy
-            , style: 'Wood- and Barrel-Aged Beer'
-            , description: 'No description available'
-            , image: null
-        };
-*/
-
-        listOfBeers.push(...this.newBeer);
-
-        this.setState({ listOfBeers: listOfBeers });
+        addingNewBeer = false;
 
     }
 

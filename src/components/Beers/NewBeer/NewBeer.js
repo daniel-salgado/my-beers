@@ -5,37 +5,46 @@ import { Form, Col, FormGroup, Button, ControlLabel, FormControl } from 'react-b
 
 class NewBeer extends Component {
 
+    onChange = (e) => {
 
-    state = {
-        beerName: null,
-        brewedBy: null,
-        beerStyle: null,
-        beerDescription: null,
+        /*
+                // Because we named the inputs to match their corresponding values in state, it's
+                // super easy to update the state
+                const state = this.state
+                state[e.target.name] = e.target.value;
+                this.setState(state);
+        */
+
+        const newBeer = this.props.newBeer[0];
+
+        newBeer[e.target.name] = e.target.value;
+
+        console.log('[NewBeer.js onChange()] ', this.props);
+
+
     }
 
-    onChange = (e) => {
-        // Because we named the inputs to match their corresponding values in state, it's
-        // super easy to update the state
-        const state = this.state
-        state[e.target.name] = e.target.value;
-        this.setState(state);
+    onAddBeer = () => {
 
+        const newBeerID = [...this.props.listOfBeers].length + 1;
 
-        this.props.NewBeer = this.state;
+        this.props.newBeer[0].id = newBeerID
 
-        console.log('[NewBeer.js onChange()] ', this.state);
+        console.log('[NewBeer.js onAddBeer()] before push', this.props.newBeer[0]);
+
+        this.props.listOfBeers.push(...this.props.newBeer[0]);
+
+        console.log('[NewBeer.js onAddBeer()] after push', this.props.newBeer[0]);
 
     }
 
 
     render() {
 
-        const x = this.props;
-
         console.log('[NewBeer.js render()] ', this.props);
 
         return (
-            <Form horizontal>
+            <Form horizontal >
 
                 <FormGroup controlId="beerName">
                     <Col componentClass={ControlLabel} sm={2}>
@@ -44,7 +53,7 @@ class NewBeer extends Component {
                     <Col sm={4}>
                         <FormControl
                             type="text"
-                            name="txtBeerName"
+                            name="name"
                             placeholder="Name of the beer"
                             value={this.props.name}
                             onChange={this.onChange} />
@@ -56,7 +65,12 @@ class NewBeer extends Component {
                         Brewed by
                     </Col>
                     <Col sm={4}>
-                        <FormControl type="text" placeholder="Brewed by..." />
+                        <FormControl
+                            type="text"
+                            name="brewedBy"
+                            placeholder="Brewed by..."
+                            value={this.props.name}
+                            onChange={this.onChange} />
                     </Col>
                 </FormGroup>
 
@@ -65,7 +79,12 @@ class NewBeer extends Component {
                         Style
 			        </Col>
                     <Col sm={4}>
-                        <FormControl type="text" placeholder="Beer style" />
+                        <FormControl
+                            type="text"
+                            name="style"
+                            placeholder="Beer style"
+                            value={this.props.name}
+                            onChange={this.onChange} />
                     </Col>
                 </FormGroup>
 
@@ -74,13 +93,18 @@ class NewBeer extends Component {
                         Description
         			</Col>
                     <Col sm={4}>
-                        <FormControl type="textarea" placeholder="Description...." />
+                        <FormControl
+                            type="textarea"
+                            name="description"
+                            placeholder="Description...."
+                            value={this.props.name}
+                            onChange={this.onChange} />
                     </Col>
                 </FormGroup>
 
                 <FormGroup>
                     <Col smOffset={2} sm={4}>
-                        <Button type="submit" onClick={this.props.addBeerClick} >Save</Button>
+                        <Button onClick={this.onAddBeer} >Save</Button>
                     </Col>
                 </FormGroup>
 
