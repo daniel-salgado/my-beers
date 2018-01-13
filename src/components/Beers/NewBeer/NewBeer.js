@@ -104,11 +104,7 @@ class NewBeer extends Component {
                     </Col>
                 </FormGroup>
 
-                <FormGroup>
-                    <Col smOffset={2} sm={4}>
-                        <Button onClick={this.props.clicked}>Save</Button>
-                    </Col>
-                </FormGroup>
+
 
             </Form>
         );
@@ -118,3 +114,11 @@ class NewBeer extends Component {
 }
 
 export default NewBeer
+
+/*
+ <FormGroup>
+                    <Col smOffset={2} sm={4}>
+                        <Button onClick={this.props.clicked}>Save</Button>
+                    </Col>
+                </FormGroup>
+                */

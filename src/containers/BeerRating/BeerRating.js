@@ -187,12 +187,16 @@ class BeerRating extends Component {
                 <Dialog
                     show={this.state.addingNewBeer}
                     modalClosed={this.hideModalHandler}
+                    submit={this.addBeerHandler}
                     title="New beer"
+                    cancelCaption="Close"
+                    submitCaption="Save"
                 >
 
                     <NewBeer
                         newBeer={this.state.newBeer}
                         clicked={this.addBeerHandler}
+
                     />
 
                 </Dialog>
@@ -207,6 +211,7 @@ class BeerRating extends Component {
                     show={this.state.showBeerDetail}
                     modalClosed={this.hideModalHandler}
                     title={this.state.modal.title}
+                    cancelCaption="Close"
                 >
                     {this.state.modal.body}
                 </Dialog>
