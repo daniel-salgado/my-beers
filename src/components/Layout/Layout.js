@@ -2,11 +2,14 @@ import React from 'react';
 //
 import './Layout.css';
 import BeerRating from '../../containers/BeerRating/BeerRating'
+import User from '../../containers/User/User';
 
 const layout = (props) => (
 
-    <BeerRating />
-
+    <User>
+        <BeerRating />
+    </User>
+    
 );
 
 export default layout;
