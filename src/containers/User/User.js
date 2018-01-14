@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-const user = () => {
-    <h1>USER</h1>
+class User extends Component {
+
 }
 
-export default user;
+export default User;

@@ -1,9 +1,9 @@
+//Code based on an example from https://codepen.io/nsieber/pen/grGpzW
+
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 const dialog = (props) => {
-
-
 
     return (
         <Modal show={props.show} onHide={props.modalClosed}>
@@ -15,26 +15,15 @@ const dialog = (props) => {
             </Modal.Body>
             <Modal.Footer>
 
-                {props.cancelCaption !== null && props.cancelCaption !== undefined ? (
-                    <Button onClick={props.modalClosed}>{props.cancelCaption}</Button>
-                ) : (
-                        (null)
-                    )}
+                {(props.cancelCaption !== null && props.cancelCaption !== undefined) ?
+                    (<Button onClick={props.modalClosed}>{props.cancelCaption}</Button>) : ((null))}
 
                 {props.submitCaption !== null && props.submitCaption !== undefined ? (
-                    <Button onClick={props.submit}>{props.submitCaption}</Button>
-                ) : (
-                        (null)
-                    )}
-
-
-
-
+                    <Button onClick={props.submit}>{props.submitCaption}</Button>) : ((null))}
 
             </Modal.Footer>
         </Modal>
     );
-
 
 };
 

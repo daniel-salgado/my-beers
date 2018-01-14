@@ -152,7 +152,6 @@ class BeerRating extends Component {
             ),
         };
 
-
         this.setState({ modal: modal });
 
     };
@@ -176,57 +175,53 @@ class BeerRating extends Component {
         let newBeer = null;
         let modal = null;
 
-        /*if (this.state.addingNewBeer) {
-            newBeer = (<NewBeer newBeer={this.state.newBeer} clicked={this.addBeerHandler} />);
-        }*/
+        /*
+            I had to disable this verification because the fade-out animation stoped to work
+            This animation is based on the bootstrap component (Dialog) and when it does not exist,
+            the animation simply does not play.
+            The same hapens to the components newBeer and showBeerDatails
+        */
+        //if (this.state.addingNewBeer) {
 
-        if (this.state.addingNewBeer) {
-            newBeer = (
+        newBeer = (
 
+            <Dialog
+                show={this.state.addingNewBeer}
+                modalClosed={this.hideModalHandler}
+                submit={this.addBeerHandler}
+                title="New beer"
+                cancelCaption="Close"
+                submitCaption="Save"
+            >
 
-                <Dialog
-                    show={this.state.addingNewBeer}
-                    modalClosed={this.hideModalHandler}
-                    submit={this.addBeerHandler}
-                    title="New beer"
-                    cancelCaption="Close"
-                    submitCaption="Save"
-                >
+                <NewBeer
+                    newBeer={this.state.newBeer}
+                    clicked={this.addBeerHandler}
+                />
 
-                    <NewBeer
-                        newBeer={this.state.newBeer}
-                        clicked={this.addBeerHandler}
+            </Dialog>
 
-                    />
+        );
 
-                </Dialog>
-
-            );
-        }
-
-        if (this.state.showBeerDetail) {
-
-            modal = (
-                <Dialog
-                    show={this.state.showBeerDetail}
-                    modalClosed={this.hideModalHandler}
-                    title={this.state.modal.title}
-                    cancelCaption="Close"
-                >
-                    {this.state.modal.body}
-                </Dialog>
-            );
-
-        }
+        modal = (
+            <Dialog
+                show={this.state.showBeerDetail}
+                modalClosed={this.hideModalHandler}
+                title={this.state.modal.title}
+                cancelCaption="Close"
+            >
+                {this.state.modal.body}
+            </Dialog>
+        );
 
         return (
+
             <div>
                 <Button onClick={this.showAddBeerFormHandler}>Add beer</Button>
                 <hr />
                 {newBeer}
                 {beers}
                 {modal}
-
             </div>
 
         );
