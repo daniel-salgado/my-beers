@@ -6,10 +6,8 @@ import User from '../../containers/User/User';
 
 const layout = (props) => (
 
-    <User>
-        <BeerRating />
-    </User>
-    
+    <BeerRating />
+
 );
 
 export default layout;
