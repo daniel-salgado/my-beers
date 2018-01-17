@@ -13,7 +13,7 @@ import Beer from '../../components/Beers/Beer/Beer';
 class BeerRating extends Component {
 
     state = {
-        listOfBeers: [
+        /*listOfBeers: [
             {
                 id: 1
                 , name: 'Amstel'
@@ -54,7 +54,9 @@ class BeerRating extends Component {
                 description: 'No description available',
                 image: null
             },
-        ],
+        
+    ],*/
+        listOfBeers: [],
         newBeer: {
             id: null,
             name: null
