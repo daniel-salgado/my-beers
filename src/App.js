@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { base, app, googleProvider } from './database/Database';
+import { base, app } from './database/Database';
 
 import './App.css';
 //To make the  bootstrap works
@@ -7,7 +7,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 import Toolbar from './components/Navigation/Toolbar/Toolbar';
 import BeerRating from './containers/BeerRating/BeerRating';
-import Welcome from './containers/Welcome/Welcome';
 import Login from './containers/Auth/Login';
 
 class App extends Component {
@@ -55,7 +54,7 @@ class App extends Component {
       }
     })
 
-    console.log('[App.js] componentWillMount', this.state);
+    //console.log('[App.js] componentWillMount', this.state);
 
     /*this.songsRef = base.syncState('songs', {
       context: this,

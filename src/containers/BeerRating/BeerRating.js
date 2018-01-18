@@ -8,7 +8,7 @@ import Beers from '../../components/Beers/Beers';
 import { Button } from 'react-bootstrap';
 import Dialog from '../../components/UI/Modal/Dialog';
 import Beer from '../../components/Beers/Beer/Beer';
-import { base } from '../../database/Database';
+import { base, ref } from '../../database/Database';
 
 
 class BeerRating extends Component {
@@ -59,13 +59,14 @@ class BeerRating extends Component {
     ],*/
         listOfBeers: [],
         newBeer: {
-            id: null,
+            key: null,
             name: null
             , brewedBy: null
             , style: null
             , description: null
             , image: null
             , addedBy: null
+            , addedOn: null
         },
         addingNewBeer: false,
         showBeerDetail: false,
@@ -74,6 +75,27 @@ class BeerRating extends Component {
             body: null,
         }
     }
+
+    //#region Component Lifcycle
+
+    componentWillMount() {
+
+        const userKey = this.props.user.uid;
+
+        //users from firebase//users from state
+        this.beersRef = base.syncState('users/' + userKey + '/beers', {
+            context: this,
+            state: "listOfBeers",
+            asArray: true
+        });
+
+    }
+
+    componentWillUnmount() {
+        base.removeBinding(this.beersRef);
+    }
+
+    //#endregion Component Lifcycle
 
 
     //#region Handlers
@@ -88,7 +110,8 @@ class BeerRating extends Component {
         newBeer.style = null;
         newBeer.description = null;
         newBeer.image = null;
-        newBeer.addedBy=null;
+        newBeer.addedBy = null;
+        newBeer.addedOn = null;
 
         this.setState({ newBeer: newBeer, addingNewBeer: false });
 
@@ -100,45 +123,23 @@ class BeerRating extends Component {
         this.setState({ addingNewBeer: true });
     }
 
-
-    getMyBeersHandler() {
-
-        console.log('Will get beers');
-
-        /*Database.fetch('persons', {
-          context: this,
-          asArray: true,
-          then(data) {
-            console.log(data);
-          }
-        });*/
-
-        const who = 'beers';
-
-        base.fetch(who, {
-            context: this, asArray: true
-        }).then(data => {
-            console.table(data);
-        }).catch(error => {/*handle error*/ });
-
-
-    }
-
     addBeerHandler = () => {
 
         this.setState({ addingNewBeer: true });
 
         let newBeer = [...this.state.newBeer];
 
-        newBeer.id = [...this.state.listOfBeers].length + 1;
+        newBeer.key = [...this.state.listOfBeers].length + 1;
         newBeer.name = this.state.newBeer.name;
         newBeer.brewedBy = this.state.newBeer.brewedBy;
         newBeer.style = this.state.newBeer.style;
         newBeer.description = this.state.newBeer.description;
         newBeer.image = null;
         newBeer.addedBy = this.props.user.uid;
+        //newBeer.addedOn = Date.now();
 
-        //console.log('[BeerRating.js addBeerHandler()] ', newBeer);
+        /*
+        console.log('[BeerRating.js addBeerHandler()] ', date);
 
         const listOfBeers = [...this.state.listOfBeers];
 
@@ -146,22 +147,32 @@ class BeerRating extends Component {
 
         this.setState({ listOfBeers: listOfBeers });
 
+        */
         this.cleanNewBeerState();
 
         //console.log('[BeerRating.js addBeerHandler()] ', newBeer);
 
-
-        var immediatelyAvailableReference = base.push('beers', {
-            data: { ...newBeer },
+        const immediatelyAvailableReference = base.push('users/' + newBeer.addedBy + '/beers', {
+            //base.push('users/' + newBeer.addedBy + '/beers', {
+            data: {},
             then(err) {
                 if (!err) {
-                    console.log(err);
+
+                    newBeer.key = immediatelyAvailableReference.key;
+                    ref.child('users/' + newBeer.addedBy + '/beers/' + newBeer.key).set(...newBeer);
+
+                    // newBeer.key = immediatelyAvailableReference.key;
+                    //console.log(err);
                 }
             }
         });
 
+
+        //newBeer.key = ref.child('users/' + newBeer.addedBy + '/beers/').push().key;
+        //ref.child('users/' + newBeer.addedBy + '/beers/' + newBeer.key).set(newBeer);
+
         //available immediately, you don't have to wait for the callback to be called
-        var generatedKey = immediatelyAvailableReference.key;
+        //var generatedKey = immediatelyAvailableReference.key;
 
     }
 
@@ -212,22 +223,12 @@ class BeerRating extends Component {
 
     render() {
 
-        console.log('[BeerRating.js] render()', this.props.user);
+        //console.log('[BeerRating.js] render()', this.props.user);
+        //this.getMyBeersHandler();
 
         const beers = (<Beers listOfBeers={this.state.listOfBeers} clicked={this.showBeerDetailsHandler} />);
-        let newBeer = null;
-        let modal = null;
 
-        /*
-            I had to disable this verification because the fade-out animation stoped to work
-            This animation is based on the bootstrap component (Dialog) and when it does not exist,
-            the animation simply does not play.
-            The same hapens to the components newBeer and showBeerDatails
-        */
-        //if (this.state.addingNewBeer) {
-
-        newBeer = (
-
+        const newBeer = (
             <Dialog
                 show={this.state.addingNewBeer}
                 modalClosed={this.hideModalHandler}
@@ -243,10 +244,9 @@ class BeerRating extends Component {
                 />
 
             </Dialog>
-
         );
 
-        modal = (
+        const modal = (
             <Dialog
                 show={this.state.showBeerDetail}
                 modalClosed={this.hideModalHandler}

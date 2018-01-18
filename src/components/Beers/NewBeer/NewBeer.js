@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Form, Col, FormGroup, Button, ControlLabel, FormControl } from 'react-bootstrap';
+import { Form, Col, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 
 
 class NewBeer extends Component {
@@ -14,12 +14,12 @@ class NewBeer extends Component {
                 state[e.target.name] = e.target.value;
                 this.setState(state);
         */
-        console.log('[NewBeer.js onChange()] ', e.target.name, e.target.value);
+        //console.log('[NewBeer.js onChange()] ', e.target.name, e.target.value);
         const newBeer = this.props.newBeer;
 
         newBeer[e.target.name] = e.target.value;
 
-        console.log('[NewBeer.js onChange()] ', this.props);
+        //console.log('[NewBeer.js onChange()] ', this.props);
 
 
     }
@@ -30,13 +30,13 @@ class NewBeer extends Component {
 
         this.props.newBeer.id = newBeerID
 
-        console.log('[NewBeer.js onAddBeer()] this.props.newBeer[0]', this.props.newBeer);
-        console.log('[NewBeer.js onAddBeer()] newBeer', newBeer);
+        //console.log('[NewBeer.js onAddBeer()] this.props.newBeer[0]', this.props.newBeer);
+        //console.log('[NewBeer.js onAddBeer()] newBeer', newBeer);
 
         newBeer = [this.props.newBeer];
 
-        console.log('[NewBeer.js onAddBeer()] this.props.newBeer[0]', this.props.newBeer);
-        console.log('[NewBeer.js onAddBeer()] newBeer', newBeer);
+        //console.log('[NewBeer.js onAddBeer()] this.props.newBeer[0]', this.props.newBeer);
+        //console.log('[NewBeer.js onAddBeer()] newBeer', newBeer);
 
     }
 

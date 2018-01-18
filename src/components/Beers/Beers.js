@@ -10,7 +10,7 @@ class Beers extends Component {
 
         return this.props.listOfBeers.map((beer, index) => {
 
-            return <div className="Beers" key={beer.id}>
+            return <div className="Beers" key={beer.key}>
                     <Beer
                         key={beer.id}
                         name={beer.name}
