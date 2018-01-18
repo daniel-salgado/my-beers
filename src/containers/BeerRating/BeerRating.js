@@ -8,6 +8,7 @@ import Beers from '../../components/Beers/Beers';
 import { Button } from 'react-bootstrap';
 import Dialog from '../../components/UI/Modal/Dialog';
 import Beer from '../../components/Beers/Beer/Beer';
+import { base } from '../../database/Database';
 
 
 class BeerRating extends Component {
@@ -64,6 +65,7 @@ class BeerRating extends Component {
             , style: null
             , description: null
             , image: null
+            , addedBy: null
         },
         addingNewBeer: false,
         showBeerDetail: false,
@@ -86,6 +88,7 @@ class BeerRating extends Component {
         newBeer.style = null;
         newBeer.description = null;
         newBeer.image = null;
+        newBeer.addedBy=null;
 
         this.setState({ newBeer: newBeer, addingNewBeer: false });
 
@@ -95,6 +98,30 @@ class BeerRating extends Component {
 
     showAddBeerFormHandler = () => {
         this.setState({ addingNewBeer: true });
+    }
+
+
+    getMyBeersHandler() {
+
+        console.log('Will get beers');
+
+        /*Database.fetch('persons', {
+          context: this,
+          asArray: true,
+          then(data) {
+            console.log(data);
+          }
+        });*/
+
+        const who = 'beers';
+
+        base.fetch(who, {
+            context: this, asArray: true
+        }).then(data => {
+            console.table(data);
+        }).catch(error => {/*handle error*/ });
+
+
     }
 
     addBeerHandler = () => {
@@ -109,6 +136,7 @@ class BeerRating extends Component {
         newBeer.style = this.state.newBeer.style;
         newBeer.description = this.state.newBeer.description;
         newBeer.image = null;
+        newBeer.addedBy = this.props.user.uid;
 
         //console.log('[BeerRating.js addBeerHandler()] ', newBeer);
 
@@ -122,6 +150,18 @@ class BeerRating extends Component {
 
         //console.log('[BeerRating.js addBeerHandler()] ', newBeer);
 
+
+        var immediatelyAvailableReference = base.push('beers', {
+            data: { ...newBeer },
+            then(err) {
+                if (!err) {
+                    console.log(err);
+                }
+            }
+        });
+
+        //available immediately, you don't have to wait for the callback to be called
+        var generatedKey = immediatelyAvailableReference.key;
 
     }
 
@@ -150,6 +190,7 @@ class BeerRating extends Component {
                     style={beer.style}
                     description={beer.description}
                     image={beer.image}
+                    addedBy={beer.addedBy}
                 />
             ),
         };
@@ -171,7 +212,7 @@ class BeerRating extends Component {
 
     render() {
 
-        //console.log('[BeerRating.js] render()', this.state.showBeerDetail);
+        console.log('[BeerRating.js] render()', this.props.user);
 
         const beers = (<Beers listOfBeers={this.state.listOfBeers} clicked={this.showBeerDetailsHandler} />);
         let newBeer = null;
