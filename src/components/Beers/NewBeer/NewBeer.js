@@ -1,14 +1,31 @@
 //http://api.brewerydb.com/v2/beers?key={a9ed838cd8af37e4de8b097e850f964d}
 import React, { Component } from 'react';
+import { base } from '../../../database/Database';
 
 import { Form, Col, FormGroup, ControlLabel, FormControl, InputGroup, Glyphicon } from 'react-bootstrap';
-
-
+import { Typeahead } from 'react-bootstrap-typeahead'; // ES2015
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 class NewBeer extends Component {
 
     state = {
-        beerStyles: null
+        beerStyles: [],
+        isLoading: true
     }
+
+
+    //#region Component Lifecycle
+
+    componentWillMount() {
+
+        this.setState({ isLoading: true });
+
+        this.getBeerStyles();
+
+
+    }
+    //#endregion Component Lifecycle
+
+    //#region Event Handler
 
     onChange = (e) => {
 
@@ -28,6 +45,31 @@ class NewBeer extends Component {
 
 
     }
+    //#endregion Event Handler
+
+    //#region Methods Handler
+
+
+    getBeerStyles() {
+
+        //Check if the user already exists
+        base.fetch('beersCatalog/styles', {
+            context: this,
+            asArray: true //Will return the object
+        }).then(data => {
+
+            //console.log('[NewBeer.js] getBeerStyles()');
+            //console.table(data);
+
+            if (data.length > 0) {
+                this.setState({ beerStyles: data });
+            }
+
+        }).catch(error => {/*handle error*/ });
+
+        this.setState({ isLoading: false });
+
+    }
 
     onAddBeer = (newBeer) => {
 
@@ -45,10 +87,12 @@ class NewBeer extends Component {
 
     }
 
+    //#endregion Methods Handler
+
 
     render() {
 
-        //console.log('[NewBeer.js render()] ', this.props);
+        //console.log('[NewBeer.js render()] ', this.state.beerStyles);
 
         return (
             <Form horizontal >
@@ -107,24 +151,15 @@ class NewBeer extends Component {
 			        </Col>
                     <Col sm={4}>
                         <InputGroup>
-
-                            <FormControl
-                                type="text"
-                                name="style"
-                                placeholder="Beer style"
-                                value={this.props.beerStyle}
-                                onChange={this.onChange}
-                                list="browsers" 
-                                autocomplete="off"/>
-                            <datalist id="browsers">
-                                <option value="Internet Explorer" />
-                                <option value="Firefox" />
-                                <option value="Chrome" />
-                                <option value="Opera" />
-                                <option value="Safari" />
-                            </datalist>
-
-
+                            <Typeahead
+                                labelKey="name"
+                                multiple={false}
+                                options={this.state.beerStyles}
+                                placeholder="Choose a style..."
+                            />
+                            <InputGroup.Addon>
+                                <Glyphicon glyph="list" />
+                            </InputGroup.Addon>
                         </InputGroup>
                     </Col>
                 </FormGroup>
