@@ -1,25 +1,28 @@
 import React from 'react';
-
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
 const toolbar = (props) => {
 
     let user = null;
-    let navItemUser = null;
+    let dropdownUser = null;
 
     if (props.user !== null && props.user !== undefined) {
 
         user = props.user;
-
-        navItemUser = (
-            <NavItem eventKey={1}>{user.name}</NavItem>
+ 
+        dropdownUser = (
+            <NavDropdown eventKey={3} title={user.name} id="basic-nav-dropdown">
+                <MenuItem eventKey={3.1}>My account</MenuItem>
+                
+                <MenuItem divider />
+                <MenuItem eventKey={3.4} onClick={props.logOut}>Sign Out</MenuItem>
+            </NavDropdown>
         );
 
     }
 
     return (
-        //<Navbar inverse collapseOnSelect>
-        <Navbar>
+        <Navbar inverse collapseOnSelect>
             <Navbar.Header>
                 <Navbar.Brand>
                     My Beers
@@ -30,12 +33,10 @@ const toolbar = (props) => {
             <Navbar.Collapse>
                 <Nav>
                     <NavItem eventKey={1}>My Beer List</NavItem>
-                    <NavItem eventKey={2} onClick={props.newBeer}>New Beer</NavItem>
+                    <NavItem eventKey={2} onClick={props.addBeer}>New Beer</NavItem>
                 </Nav>
                 <Nav pullRight>
-                    {navItemUser}
-
-                    <NavItem eventKey={2} onClick={props.logOut}>Sign in/Sign out</NavItem>
+                    {dropdownUser}
                 </Nav>
             </Navbar.Collapse>
         </Navbar>);

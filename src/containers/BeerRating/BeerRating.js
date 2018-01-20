@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import './BeerRating.css'
-//import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-
 
 import NewBeer from '../../components/Beers/NewBeer/NewBeer';
 import Beers from '../../components/Beers/Beers';
-import { Button } from 'react-bootstrap';
 import Dialog from '../../components/UI/Modal/Dialog';
 import Beer from '../../components/Beers/Beer/Beer';
 import { base, ref } from '../../database/Database';
+import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
+
+//Temporary
+import '../../App.css';
 
 
 class BeerRating extends Component {
@@ -138,41 +139,19 @@ class BeerRating extends Component {
         newBeer.addedBy = this.props.user.uid;
         //newBeer.addedOn = Date.now();
 
-        /*
-        console.log('[BeerRating.js addBeerHandler()] ', date);
-
-        const listOfBeers = [...this.state.listOfBeers];
-
-        listOfBeers.push(newBeer);
-
-        this.setState({ listOfBeers: listOfBeers });
-
-        */
         this.cleanNewBeerState();
 
-        //console.log('[BeerRating.js addBeerHandler()] ', newBeer);
-
         const immediatelyAvailableReference = base.push('users/' + newBeer.addedBy + '/beers', {
-            //base.push('users/' + newBeer.addedBy + '/beers', {
-            data: {},
+            data: { newBeer },
             then(err) {
                 if (!err) {
 
                     newBeer.key = immediatelyAvailableReference.key;
-                    ref.child('users/' + newBeer.addedBy + '/beers/' + newBeer.key).set(...newBeer);
+                    ref.child('users/' + newBeer.addedBy + '/beers/' + newBeer.key).set(newBeer);
 
-                    // newBeer.key = immediatelyAvailableReference.key;
-                    //console.log(err);
                 }
             }
         });
-
-
-        //newBeer.key = ref.child('users/' + newBeer.addedBy + '/beers/').push().key;
-        //ref.child('users/' + newBeer.addedBy + '/beers/' + newBeer.key).set(newBeer);
-
-        //available immediately, you don't have to wait for the callback to be called
-        //var generatedKey = immediatelyAvailableReference.key;
 
     }
 
@@ -259,9 +238,12 @@ class BeerRating extends Component {
 
         return (
 
-            <div>
-                <Button onClick={this.showAddBeerFormHandler}>Add beer</Button>
-                <hr />
+            <div className="BeerRating">
+                <Toolbar
+                    logOut={this.props.logOut}
+                    user={this.props.user}
+                    addBeer={this.showAddBeerFormHandler}
+                />
                 {newBeer}
                 {beers}
                 {modal}

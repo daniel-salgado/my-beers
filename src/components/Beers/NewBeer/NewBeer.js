@@ -1,9 +1,14 @@
+//http://api.brewerydb.com/v2/beers?key={a9ed838cd8af37e4de8b097e850f964d}
 import React, { Component } from 'react';
 
-import { Form, Col, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
+import { Form, Col, FormGroup, ControlLabel, FormControl, InputGroup, Glyphicon } from 'react-bootstrap';
 
 
 class NewBeer extends Component {
+
+    state = {
+        beerStyles: null
+    }
 
     onChange = (e) => {
 
@@ -50,7 +55,7 @@ class NewBeer extends Component {
 
                 <FormGroup controlId="beerName">
                     <Col componentClass={ControlLabel} sm={2}>
-                        Beer
+                        Beer Name:
                     </Col>
                     <Col sm={4}>
                         <FormControl
@@ -81,14 +86,50 @@ class NewBeer extends Component {
                         Style
 			        </Col>
                     <Col sm={4}>
-                        <FormControl
-                            type="text"
-                            name="style"
-                            placeholder="Beer style"
-                            value={this.props.beerStyle}
-                            onChange={this.onChange} />
+                        <InputGroup>
+                            <FormControl
+                                type="select"
+                                name="style"
+                                placeholder="Beer style"
+                                value={this.props.beerStyle}
+                                onChange={this.onChange} />
+                            <InputGroup.Addon>
+                                <Glyphicon glyph="list" />
+                            </InputGroup.Addon>
+                        </InputGroup>
                     </Col>
                 </FormGroup>
+
+
+                <FormGroup controlId="beerStyle">
+                    <Col componentClass={ControlLabel} sm={2}>
+                        Style
+			        </Col>
+                    <Col sm={4}>
+                        <InputGroup>
+
+                            <FormControl
+                                type="text"
+                                name="style"
+                                placeholder="Beer style"
+                                value={this.props.beerStyle}
+                                onChange={this.onChange}
+                                list="browsers" 
+                                autocomplete="off"/>
+                            <datalist id="browsers">
+                                <option value="Internet Explorer" />
+                                <option value="Firefox" />
+                                <option value="Chrome" />
+                                <option value="Opera" />
+                                <option value="Safari" />
+                            </datalist>
+
+
+                        </InputGroup>
+                    </Col>
+                </FormGroup>
+
+
 
                 <FormGroup controlId="beerDescription">
                     <Col componentClass={ControlLabel} sm={2}>
