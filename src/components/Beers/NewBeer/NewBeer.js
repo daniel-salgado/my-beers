@@ -3,13 +3,19 @@ import React, { Component } from 'react';
 import { base } from '../../../database/Database';
 
 import { Form, Col, FormGroup, ControlLabel, FormControl, InputGroup, Glyphicon } from 'react-bootstrap';
-import { Typeahead } from 'react-bootstrap-typeahead'; // ES2015
+import { Typeahead, AsyncTypeahead } from 'react-bootstrap-typeahead'; // ES2015
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import { isArray } from 'util';
+
+
+import { saveBeersFromBrewedDB } from '../../../database/BreweryDB';
+
 class NewBeer extends Component {
 
     state = {
         beerStyles: [],
-        isLoading: true
+        isLoading: true,
+        options: [],
     }
 
 
@@ -20,7 +26,6 @@ class NewBeer extends Component {
         this.setState({ isLoading: true });
 
         this.getBeerStyles();
-
 
     }
     //#endregion Component Lifecycle
@@ -36,19 +41,20 @@ class NewBeer extends Component {
                 state[e.target.name] = e.target.value;
                 this.setState(state);
         */
-        //console.log('[NewBeer.js onChange()] ', e.target.name, e.target.value);
+
         const newBeer = this.props.newBeer;
 
-        newBeer[e.target.name] = e.target.value;
-
-        //console.log('[NewBeer.js onChange()] ', this.props);
-
+        if (e.target === undefined) {
+            newBeer["style"] = e;
+        } else {
+            newBeer[e.target.name] = e.target.value;
+        }
 
     }
+
     //#endregion Event Handler
 
     //#region Methods Handler
-
 
     getBeerStyles() {
 
@@ -131,31 +137,13 @@ class NewBeer extends Component {
 			        </Col>
                     <Col sm={4}>
                         <InputGroup>
-                            <FormControl
-                                type="select"
-                                name="style"
-                                placeholder="Beer style"
-                                value={this.props.beerStyle}
-                                onChange={this.onChange} />
-                            <InputGroup.Addon>
-                                <Glyphicon glyph="list" />
-                            </InputGroup.Addon>
-                        </InputGroup>
-                    </Col>
-                </FormGroup>
-
-
-                <FormGroup controlId="beerStyle">
-                    <Col componentClass={ControlLabel} sm={2}>
-                        Style
-			        </Col>
-                    <Col sm={4}>
-                        <InputGroup>
                             <Typeahead
                                 labelKey="name"
                                 multiple={false}
                                 options={this.state.beerStyles}
                                 placeholder="Choose a style..."
+                                value={this.props.style}
+                                onInputChange={this.onChange}
                             />
                             <InputGroup.Addon>
                                 <Glyphicon glyph="list" />
@@ -165,7 +153,48 @@ class NewBeer extends Component {
                 </FormGroup>
 
 
+                <AsyncTypeahead
+                    isLoading={this.state.isLoading}
+                    labelKey="name"
+                    onSearch={query => {
 
+                        let result = null;
+                        this.setState({ isLoading: true });
+
+                        const apiURL = 'https://api.brewerydb.com/v2/search?';
+                        const queryString = "q=" + query;
+                        const type = "&type=beer";
+                        const key = "&key=a9ed838cd8af37e4de8b097e850f964d";
+                        const format = "&format=json";
+
+                        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                        const targetUrl = apiURL + queryString + type + key + format;
+
+                        //NO-CORS issue resolved by porxyUrl
+                        //https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
+                        fetch(proxyUrl + targetUrl)
+                            .then(result => result.json())
+                            .then(json => {
+                                result = json.data;
+                                console.table(result);
+
+                                if (isArray(result)) {
+                                    this.setState({ options: result });
+                                    saveBeersFromBrewedDB.saveBeersFromBrewedDB(result);
+                                }
+
+                            })
+                            .catch(e => {
+                                console.log(e);
+                                return e;
+                            });
+
+
+
+                    }}
+
+                    options={this.state.options}
+                />
                 <FormGroup controlId="beerDescription">
                     <Col componentClass={ControlLabel} sm={2}>
                         Description
@@ -180,8 +209,6 @@ class NewBeer extends Component {
                     </Col>
                 </FormGroup>
 
-
-
             </Form>
         );
 
@@ -190,11 +217,3 @@ class NewBeer extends Component {
 }
 
 export default NewBeer
-
-/*
- <FormGroup>
-                    <Col smOffset={2} sm={4}>
-                        <Button onClick={this.props.clicked}>Save</Button>
-                    </Col>
-                </FormGroup>
-                */

@@ -60,6 +60,7 @@ class BeerRating extends Component {
     ],*/
         listOfBeers: [],
         newBeer: {
+            id: null,
             key: null,
             name: null
             , brewedBy: null
