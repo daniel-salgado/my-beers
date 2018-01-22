@@ -132,7 +132,13 @@ class BeerRating extends Component {
     }
 
     showAddBeerFormHandler = () => {
-        this.setState({ addingNewBeer: true });
+
+        const addingNewBeer = !this.state.addingNewBeer;
+
+        this.setState({ addingNewBeer: addingNewBeer });
+
+        console.log(this.state.addingNewBeer.toString());
+
     }
 
     addBeerHandler = () => {
@@ -211,17 +217,23 @@ class BeerRating extends Component {
 
         const beers = (<Beers listOfBeers={this.state.listOfBeers} clicked={this.showBeerDetailsHandler} />);
 
-        const newBeer = (
+        let newBeer = null;
 
+        if (this.state.addingNewBeer) {
 
-            <NewBeer
-                newBeer={this.state.newBeer}
-                clicked={this.addBeerHandler}
-                user={this.props.user}
-                addingNewBeer={this.state.addingNewBeer}
-            />
+            newBeer = (
 
-        );
+                <NewBeer
+                    newBeer={this.state.newBeer}
+                    clicked={this.addBeerHandler}
+                    cancelButton={this.hideModalHandler}
+                    user={this.props.user}
+                    addingNewBeer={this.state.addingNewBeer}
+                />
+
+            );
+
+        }
 
         const modal = (
             <Dialog
@@ -241,6 +253,7 @@ class BeerRating extends Component {
                     logOut={this.props.logOut}
                     user={this.props.user}
                     addBeer={this.showAddBeerFormHandler}
+                    listBeerClicked={this.hideModalHandler}
                 />
                 {newBeer}
                 {beers}

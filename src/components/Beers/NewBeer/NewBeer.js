@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { base, ref } from '../../../database/Database';
 
 
-import { Form, Col, FormGroup, ControlLabel, FormControl, InputGroup, Glyphicon, Button } from 'react-bootstrap';
-import { Typeahead, AsyncTypeahead } from 'react-bootstrap-typeahead'; // ES2015
+import { Form, Col, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { AsyncTypeahead } from 'react-bootstrap-typeahead'; // ES2015
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { isArray } from 'util';
 
@@ -12,8 +12,9 @@ class NewBeer extends Component {
 
     state = {
         beerStyles: [],
-        isLoading: true,
-        options: [],
+        isLoading: false,
+        beerOptions: [],
+        styleOptions: [],
         newBeer: {
             id: '',
             key: '',
@@ -24,8 +25,9 @@ class NewBeer extends Component {
             image: '',
             addedBy: '',
             addedOn: '',
-            myRanting: ''
+            myRanting: '',
         },
+        selectedStyle: [],
     }
 
 
@@ -33,9 +35,9 @@ class NewBeer extends Component {
 
     componentWillMount() {
 
-        this.setState({ isLoading: true });
+        //this.setState({ isLoading: true });
 
-        this.getBeerStyles();
+        //this.getBeerStyles();
 
     }
     //#endregion Component Lifecycle
@@ -44,7 +46,7 @@ class NewBeer extends Component {
 
     changeBrewerHandler = (event) => {
 
-        console.log('[NewBeer.js] changeBrewerHandler', event.target.value);
+        //console.log('[NewBeer.js] changeBrewerHandler', event.target.value);
 
         const newBeer = { ...this.state.newBeer };
 
@@ -53,15 +55,59 @@ class NewBeer extends Component {
         this.setState({ newBeer: newBeer });
     }
 
-    changeStyleHandler = (event) => {
+    changeStyleHandler = (value) => {
 
-        console.log('[NewBeer.js] changeStyleHandler', event.target.value);
+        console.log('[NewBeer.js] changeStyleHandler', value);
 
         const newBeer = { ...this.state.newBeer };
 
-        newBeer.style = event.target.value;
+        newBeer.style = value;
 
         this.setState({ newBeer: newBeer });
+    }
+
+    changeBrewerHandler = (value) => {
+
+        console.log('[NewBeer.js] changeStyleHandler', value);
+
+        const newBeer = { ...this.state.newBeer };
+
+        newBeer.brewedBy = value;
+
+        this.setState({ newBeer: newBeer });
+    }
+
+    changeDescriptionHandler = (event) => {
+
+        //console.log('[NewBeer.js] changeBrewerHandler', event.target.value);
+
+        const newBeer = { ...this.state.newBeer };
+
+        newBeer.description = event.target.value;
+
+        this.setState({ newBeer: newBeer });
+
+    }
+
+    cleanNewBeerState() {
+
+        let newBeer = [...this.state.newBeer];
+
+        newBeer.id = '';
+        newBeer.name = '';
+        newBeer.brewedBy = '';
+        newBeer.style = '';
+        newBeer.description = '';
+        newBeer.image = '';
+        newBeer.addedBy = '';
+        newBeer.addedOn = '';
+        newBeer.myRanting = '';
+
+        this.setState({ newBeer: newBeer });
+
+        //this.props.addingNewBeer = false;
+        //console.log('[BeerRating.js cleanNewBeerState()] ', newBeer);
+
     }
 
     //#endregion Event Handler
@@ -80,7 +126,7 @@ class NewBeer extends Component {
             //console.table(data);
 
             if (data.length > 0) {
-                this.setState({ beerStyles: data });
+                this.setState({ styleOptions: data });
             }
 
         }).catch(error => {/*handle error*/ });
@@ -93,7 +139,7 @@ class NewBeer extends Component {
 
         this.setState({ addingNewBeer: true });
 
-        console.log(this.state.newBeer);
+        //console.log(this.state.newBeer);
 
         let newBeer = [...this.state.newBeer];
 
@@ -101,11 +147,10 @@ class NewBeer extends Component {
         newBeer.brewedBy = this.state.newBeer.brewedBy;
         newBeer.style = this.state.newBeer.style;
         newBeer.description = this.state.newBeer.description;
-        newBeer.image = null;
+        newBeer.image = this.state.newBeer.image;
         newBeer.addedBy = this.props.user.uid;
         newBeer.myRanting = this.state.newBeer.myRanting;
         //newBeer.addedOn = Date.now();
-
 
         const immediatelyAvailableReference = base.push('users/' + newBeer.addedBy + '/beers', {
             data: { newBeer },
@@ -120,13 +165,14 @@ class NewBeer extends Component {
             }
         });
 
+        this.cleanNewBeerState();
+
     }
-
-
 
     render() {
 
-        console.log('[NewBeer.js render()] ', this.state.newBeer);
+        //console.log('[NewBeer.js render()] ', this.state.newBeer);
+        //console.table(this.state.newBeer);
 
         return (
 
@@ -145,9 +191,11 @@ class NewBeer extends Component {
                             onInputChange={
                                 changedTxt => {
 
-                                    const newBeer = this.state.newBeer;
+                                    const newBeer = { ...this.state.newBeer };
                                     newBeer.name = changedTxt;
-                                    console.log(this.state.newBeer);
+                                    this.setState({ newBeer: newBeer });
+
+                                    //console.log(this.state.newBeer);
 
                                 }
                             }
@@ -157,9 +205,27 @@ class NewBeer extends Component {
                                     if (isArray(changedTxt)) {
                                         if (changedTxt[0] !== undefined) {
 
-                                            const newBeer = this.state.newBeer;
+                                            const newBeer = { ...this.state.newBeer };
+                                            newBeer.id = changedTxt[0].id;
                                             newBeer.name = changedTxt[0].name;
                                             newBeer.style = changedTxt[0].style.name;
+
+                                            if (changedTxt[0].labels !== undefined) {
+                                                newBeer.image = changedTxt[0].labels.medium;
+                                            }
+                                            else {
+                                                newBeer.image = null;
+                                            }
+
+                                            newBeer.brewedBy = changedTxt[0].breweries[0].name;
+
+                                            this.setState({ newBeer: newBeer });
+
+                                            //console.log('passou por aqui');
+                                            //console.log(newBeer);
+                                            //console.log(this.state.newBeer);
+
+                                            this.setState({ newBeer: newBeer });
 
                                         }
                                     }
@@ -167,21 +233,23 @@ class NewBeer extends Component {
                                 }
                             }
 
-                            options={this.state.options}
+                            options={this.state.beerOptions}
 
                             onSearch={query => {
 
                                 let result = null;
                                 this.setState({ isLoading: true });
 
-                                const apiURL = 'https://api.brewerydb.com/v2/search?';
+                                const apiURL = "https://api.brewerydb.com/v2/";
+                                const apiOperation = "search?";
                                 const queryString = "q=" + query;
                                 const type = "&type=beer";
+                                const withBreweries = "&withBreweries=Y";
                                 const key = "&key=a9ed838cd8af37e4de8b097e850f964d";
                                 const format = "&format=json";
 
                                 const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-                                const targetUrl = apiURL + queryString + type + key + format;
+                                const targetUrl = apiURL + apiOperation + queryString + type + withBreweries + key + format;
 
                                 //NO-CORS issue resolved by porxyUrl
                                 //https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
@@ -191,7 +259,8 @@ class NewBeer extends Component {
                                         result = json.data;
 
                                         if (isArray(result)) {
-                                            this.setState({ options: result, isLoading: false });
+                                            this.setState({ beerOptions: result, isLoading: false });
+                                            console.table(result);
                                         }
 
                                     })
@@ -227,13 +296,11 @@ class NewBeer extends Component {
                         Style
 			        </Col>
                     <Col sm={4}>
-                        <Typeahead
-                            labelKey="name"
-                            multiple={false}
-                            options={this.state.options}
-                            placeholder="Choose a style..."
-                        //onInputChange={this.onChange}
-                        //value={this.state.newBeer.style}
+                        <FormControl
+                            type="text"
+                            placeholder="Style..."
+                            onChange={this.changeDescriptionHandler}
+                            value={this.state.newBeer.style}
                         />
 
                     </Col>
@@ -248,13 +315,15 @@ class NewBeer extends Component {
                             type="textarea"
                             name="description"
                             placeholder="Description..."
-                            onChange={this.onChange} />
+                            onChange={this.changeDescriptionHandler}
+                            value={this.state.newBeer.description} />
                     </Col>
                 </FormGroup>
 
                 <FormGroup>
                     <Col smOffset={2} sm={10}>
-                        <Button onClick={this.addBeerHandler}>Vai</Button>
+                        <Button bsStyle="danger" onClick={this.props.cancelButton}>Cancel</Button>
+                        <Button bsStyle="primary" onClick={this.addBeerHandler}>Save</Button>
                     </Col>
                 </FormGroup>
 
