@@ -212,22 +212,15 @@ class BeerRating extends Component {
         const beers = (<Beers listOfBeers={this.state.listOfBeers} clicked={this.showBeerDetailsHandler} />);
 
         const newBeer = (
-            <Dialog
-                show={this.state.addingNewBeer}
-                modalClosed={this.hideModalHandler}
-                submit={this.addBeerHandler}
-                title="New beer"
-                cancelCaption="Close"
-                submitCaption="Save"
-            >
 
-                <NewBeer
-                    newBeer={this.state.newBeer}
-                    clicked={this.addBeerHandler}
-                    user={this.props.user}
-                />
 
-            </Dialog>
+            <NewBeer
+                newBeer={this.state.newBeer}
+                clicked={this.addBeerHandler}
+                user={this.props.user}
+                addingNewBeer={this.state.addingNewBeer}
+            />
+
         );
 
         const modal = (
@@ -261,3 +254,30 @@ class BeerRating extends Component {
 };
 
 export default BeerRating;
+
+
+/*
+
+ const newBeer = (
+            <Dialog
+                show={this.state.addingNewBeer}
+                modalClosed={this.hideModalHandler}
+                submit={this.addBeerHandler}
+                title="New beer"
+                cancelCaption="Close"
+                submitCaption="Save"
+            >
+
+                <NewBeer
+                    newBeer={this.state.newBeer}
+                    clicked={this.addBeerHandler}
+                    user={this.props.user}
+                    addingNewBeer={this.state.addingNewBeer}
+                />
+
+            </Dialog>
+        );
+
+
+
+*/

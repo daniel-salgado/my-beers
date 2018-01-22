@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { base, ref } from '../../../database/Database';
 
 
-import { Form, Col, FormGroup, ControlLabel, FormControl, InputGroup, Glyphicon } from 'react-bootstrap';
+import { Form, Col, FormGroup, ControlLabel, FormControl, InputGroup, Glyphicon, Button } from 'react-bootstrap';
 import { Typeahead, AsyncTypeahead } from 'react-bootstrap-typeahead'; // ES2015
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { isArray } from 'util';
@@ -14,7 +14,18 @@ class NewBeer extends Component {
         beerStyles: [],
         isLoading: true,
         options: [],
-        style: '',
+        newBeer: {
+            id: '',
+            key: '',
+            name: '',
+            brewedBy: '',
+            style: '',
+            description: '',
+            image: '',
+            addedBy: '',
+            addedOn: '',
+            myRanting: ''
+        },
     }
 
 
@@ -31,33 +42,26 @@ class NewBeer extends Component {
 
     //#region Event Handler
 
-    onChange = (e) => {
+    changeBrewerHandler = (event) => {
 
-        /*
-                // Because we named the inputs to match their corresponding values in state, it's
-                // super easy to update the state
-                const state = this.state
-                state[e.target.name] = e.target.value;
-                this.setState(state);
-        */
+        console.log('[NewBeer.js] changeBrewerHandler', event.target.value);
 
-        const newBeer = this.props.newBeer;
+        const newBeer = { ...this.state.newBeer };
 
-        if (e.target === undefined) {
-            console.log('onChange', e);
-            newBeer["style"] = e;
-        } else {
-            newBeer[e.target.name] = e.target.value;
-            console.log('onChange', e.target.name, e.target.value);
+        newBeer.brewedBy = event.target.value;
 
-        }
-
+        this.setState({ newBeer: newBeer });
     }
 
-    onInputChange = (event) => {
+    changeStyleHandler = (event) => {
 
-        console.log('onInputChange', event);
+        console.log('[NewBeer.js] changeStyleHandler', event.target.value);
 
+        const newBeer = { ...this.state.newBeer };
+
+        newBeer.style = event.target.value;
+
+        this.setState({ newBeer: newBeer });
     }
 
     //#endregion Event Handler
@@ -85,13 +89,47 @@ class NewBeer extends Component {
 
     }
 
+    addBeerHandler = () => {
+
+        this.setState({ addingNewBeer: true });
+
+        console.log(this.state.newBeer);
+
+        let newBeer = [...this.state.newBeer];
+
+        newBeer.name = this.state.newBeer.name;
+        newBeer.brewedBy = this.state.newBeer.brewedBy;
+        newBeer.style = this.state.newBeer.style;
+        newBeer.description = this.state.newBeer.description;
+        newBeer.image = null;
+        newBeer.addedBy = this.props.user.uid;
+        newBeer.myRanting = this.state.newBeer.myRanting;
+        //newBeer.addedOn = Date.now();
+
+
+        const immediatelyAvailableReference = base.push('users/' + newBeer.addedBy + '/beers', {
+            data: { newBeer },
+            then(err) {
+                if (!err) {
+
+                    newBeer.key = immediatelyAvailableReference.key;
+                    ref.child('users/' + newBeer.addedBy + '/beers/' + newBeer.key).set(newBeer);
+                    ref.child('beersCatalog/beers/' + newBeer.key).set(newBeer);
+
+                }
+            }
+        });
+
+    }
+
 
 
     render() {
 
-        //console.log('[NewBeer.js render()] ', this.state.beerStyles);
+        console.log('[NewBeer.js render()] ', this.state.newBeer);
 
         return (
+
             <Form horizontal >
 
                 <FormGroup controlId="beerName">
@@ -103,30 +141,26 @@ class NewBeer extends Component {
                             isLoading={this.state.isLoading}
                             labelKey="name"
                             placeholder="Name of the beer"
-                            //value={this.props.newBeer.style}
+                            value={this.state.newBeer.name}
                             onInputChange={
                                 changedTxt => {
-                                    const newBeer = this.props.newBeer;
-                                    newBeer["name"] = changedTxt;
+
+                                    const newBeer = this.state.newBeer;
+                                    newBeer.name = changedTxt;
+                                    console.log(this.state.newBeer);
+
                                 }
                             }
                             onChange={
                                 changedTxt => {
 
                                     if (isArray(changedTxt)) {
-                                        //this.props.newBeer.brewedBy = changedTxt[0].style.name;
-                                        //console.log(this.props.newBeer.brewedBy);
-
-
                                         if (changedTxt[0] !== undefined) {
 
+                                            const newBeer = this.state.newBeer;
+                                            newBeer.name = changedTxt[0].name;
+                                            newBeer.style = changedTxt[0].style.name;
 
-
-                                            const style = changedTxt[0].style.name;
-                                            console.log(style);
-
-                                            this.setState({ style: style });
-                                            console.log(this.state.style);
                                         }
                                     }
 
@@ -181,7 +215,8 @@ class NewBeer extends Component {
                             type="text"
                             name="brewedBy"
                             placeholder="Brewery"
-                            onChange={this.onChange}
+                            onChange={this.changeBrewerHandler}
+                            value={this.state.newBeer.brewedBy}
 
                         />
                     </Col>
@@ -192,19 +227,15 @@ class NewBeer extends Component {
                         Style
 			        </Col>
                     <Col sm={4}>
-                        <InputGroup>
-                            <Typeahead
-                                labelKey="name"
-                                multiple={false}
-                                options={this.state.beerStyles}
-                                placeholder="Choose a style..."
-                                //onInputChange={this.onChange}
-                                value={this.state.style}
-                            />
-                            <InputGroup.Addon>
-                                <Glyphicon glyph="list" />
-                            </InputGroup.Addon>
-                        </InputGroup>
+                        <Typeahead
+                            labelKey="name"
+                            multiple={false}
+                            options={this.state.options}
+                            placeholder="Choose a style..."
+                        //onInputChange={this.onChange}
+                        //value={this.state.newBeer.style}
+                        />
+
                     </Col>
                 </FormGroup>
 
@@ -217,12 +248,18 @@ class NewBeer extends Component {
                             type="textarea"
                             name="description"
                             placeholder="Description..."
-                            value={this.props.newBeer.description}
                             onChange={this.onChange} />
                     </Col>
                 </FormGroup>
 
+                <FormGroup>
+                    <Col smOffset={2} sm={10}>
+                        <Button onClick={this.addBeerHandler}>Vai</Button>
+                    </Col>
+                </FormGroup>
+
             </Form>
+
         );
 
     };
