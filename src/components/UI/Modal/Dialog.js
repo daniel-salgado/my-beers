@@ -8,7 +8,7 @@ const dialog = (props) => {
     return (
         <Modal show={props.show} onHide={props.modalClosed}>
             <Modal.Header closeButton>
-                <Modal.Title>{props.modalClosed}</Modal.Title>
+                <Modal.Title>{props.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {props.children}

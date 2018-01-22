@@ -9,7 +9,7 @@ const config = {
 };
 
 
-function saveBeersFromBrewedDB(beers) {
+const saveBeersFromBrewedDB = (beers) => {
 
     console.log('[BreweryDB.js] saveBeersFromBrewedDB beers:', beers);
 
