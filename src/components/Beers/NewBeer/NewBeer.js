@@ -10,7 +10,7 @@ import { isArray } from 'util';
 import StarRatings from 'react-star-ratings'
 
 import beerPlaceHolder from '../../../assets/images/placeholder.png'
-
+import './NewBeer.css';
 
 class NewBeer extends Component {
 
@@ -182,7 +182,7 @@ class NewBeer extends Component {
 
         return (
 
-            <div className="container">
+            <div className="container NewBeer">
                 <Col sm={8}>
                     <Form horizontal >
 
@@ -286,7 +286,7 @@ class NewBeer extends Component {
                         <FormGroup controlId="brewedBy">
                             <Col componentClass={ControlLabel} sm={2}>
                                 Brewed by
-                    </Col>
+                            </Col>
                             <Col sm={10}>
                                 <FormControl
                                     type="text"
@@ -302,7 +302,7 @@ class NewBeer extends Component {
                         <FormGroup controlId="beerStyle">
                             <Col componentClass={ControlLabel} sm={2}>
                                 Style
-			        </Col>
+			                 </Col>
                             <Col sm={10}>
                                 <FormControl
                                     type="text"
@@ -315,6 +315,7 @@ class NewBeer extends Component {
                         </FormGroup>
 
                         <hr />
+
                         <FormGroup controlId="beerRating">
                             <Col componentClass={ControlLabel} sm={2}>
                                 Rating
@@ -353,9 +354,11 @@ class NewBeer extends Component {
                             </Col>
                         </FormGroup>
 
-                        <FormGroup>
-                            <Col smOffset={2} sm={10}>
+                        <FormGroup controlId="beerButtons">
+                            <Col smOffset={10} sm={1}>
                                 <Button bsStyle="danger" onClick={this.props.cancelButton}>Cancel</Button>
+                            </Col>
+                            <Col sm={1}>
                                 <Button bsStyle="primary" onClick={this.addBeerHandler}>Save</Button>
                             </Col>
                         </FormGroup>
@@ -365,8 +368,6 @@ class NewBeer extends Component {
                 </Col>
                 <Col sm={4}>
                     <img src={(this.state.newBeer.image === null || this.state.newBeer.image === '') ? beerPlaceHolder : this.state.newBeer.image} width="100%" />
-
-
                 </Col>
 
             </div>
