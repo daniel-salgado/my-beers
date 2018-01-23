@@ -4,9 +4,9 @@
 
 .Welcome {
   background-position: center center;
-  background-image: url(../../assets/images/beerbkg.jpg);
+  /*background-image: url(../../assets/images/beerbkg.jpg);*/
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
-  background-color:#464646;
+  /*background-color:#464646;*/
 }
