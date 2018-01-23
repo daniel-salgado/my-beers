@@ -1,4 +1,9 @@
 .NewBeer {
     background-color: rgba(243, 230, 230, 0.8);
     padding-top: 16px;
+    border-radius: 5px;
+}
+
+.NewBeer img {
+    border-radius: 5px;
 }

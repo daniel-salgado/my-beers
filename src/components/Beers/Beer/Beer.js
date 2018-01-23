@@ -19,7 +19,7 @@ const beer = (props) => {
                 <img src={props.image === null ? "http://via.placeholder.com/100x150" : props.image} alt={props.name} height="150px" />
             </div>
             <div className="beer-desc">
-                <h2>{props.name}<span> • {props.style}</span></h2> 
+                <h2>{props.name}<span> • {props.style}</span></h2>
 
                 <StarRatings
                     rating={props.myRating}
@@ -32,8 +32,8 @@ const beer = (props) => {
                     starSelectingHoverColor="gold"//"rgb(220, 209, 41)"
                 />
 
-                <p><strong>Where: </strong>Pub Ace</p>
-                <p><strong>When: </strong>Jan 5th 2018</p>
+                {(props.where === null || props.where === '' || props.where === undefined) ? null : (<p><strong>Where: </strong>{props.where}</p>)}
+                {(props.when === null || props.when === '' || props.when === undefined) ? null : (<p><strong>When: </strong>{props.when}</p>)}
 
                 <p>{props.comment}</p>
 

@@ -1,4 +1,6 @@
 //http://api.brewerydb.com/v2/beers?key={a9ed838cd8af37e4de8b097e850f964d}
+//https://www.npmjs.com/package/react-datetime
+
 import React, { Component } from 'react';
 import { base, ref } from '../../../database/Database';
 
@@ -7,7 +9,12 @@ import { Form, Col, FormGroup, ControlLabel, FormControl, Button } from 'react-b
 import { AsyncTypeahead } from 'react-bootstrap-typeahead'; // ES2015
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { isArray } from 'util';
-import StarRatings from 'react-star-ratings'
+import StarRatings from 'react-star-ratings';
+
+import * as DateTime from 'react-datetime';
+import 'react-datetime/css/react-datetime.css';
+import moment from 'moment';
+
 
 import beerPlaceHolder from '../../../assets/images/placeholder.png'
 import './NewBeer.css';
@@ -29,7 +36,9 @@ class NewBeer extends Component {
             image: '',
             addedBy: '',
             addedOn: '',
-            myRanting: '',
+            myRating: 0,
+            where: '',
+            when: '',
         },
         selectedStyle: [],
     }
@@ -93,6 +102,32 @@ class NewBeer extends Component {
 
     }
 
+    changeWhereHandler = (event) => {
+
+        //console.log('[NewBeer.js] changeBrewerHandler', event.target.value);
+
+        const newBeer = { ...this.state.newBeer };
+
+        newBeer.where = event.target.value;
+
+        this.setState({ newBeer: newBeer });
+
+    }
+
+    changeWhenHandler = (event) => {
+
+        const fixedDate = moment(event).format("D MMM YYYY");
+
+        console.log('[NewBeer.js] changeWhenHandler', event.format("D MMM YYYY"));
+
+        const newBeer = { ...this.state.newBeer };
+
+        newBeer.when = fixedDate;
+
+        this.setState({ newBeer: newBeer });
+
+    }
+
     cleanNewBeerState() {
 
         let newBeer = [...this.state.newBeer];
@@ -105,7 +140,9 @@ class NewBeer extends Component {
         newBeer.image = '';
         newBeer.addedBy = '';
         newBeer.addedOn = '';
-        newBeer.myRanting = '';
+        newBeer.myRating = 0;
+        newBeer.where = '';
+        newBeer.when = '';
 
         this.setState({ newBeer: newBeer });
 
@@ -153,7 +190,9 @@ class NewBeer extends Component {
         newBeer.comment = this.state.newBeer.comment;
         newBeer.image = this.state.newBeer.image;
         newBeer.addedBy = this.props.user.uid;
-        newBeer.myRanting = this.state.newBeer.myRanting;
+        newBeer.myRating = this.state.newBeer.myRating;
+        newBeer.where = this.state.newBeer.where;
+        newBeer.when = this.state.newBeer.when;
         //newBeer.addedOn = Date.now();
 
         const immediatelyAvailableReference = base.push('users/' + newBeer.addedBy + '/beers', {
@@ -177,7 +216,7 @@ class NewBeer extends Component {
 
     render() {
 
-        console.log('[NewBeer.js render()] ', this.state.newBeer);
+        //console.log('[NewBeer.js render()] ', this.state.newBeer);
         //console.table(this.state.newBeer);
 
         return (
@@ -316,21 +355,83 @@ class NewBeer extends Component {
 
                         <hr />
 
+
+                        <Col sm={6}>
+
+                            <FormGroup controlId="beerWhere">
+
+                                <Col componentClass={ControlLabel} sm={2}>Where</Col>
+
+                                <Col sm={10}>
+
+                                    <FormControl
+                                        name="where"
+                                        type="text"
+                                        placeholder="Where?"
+                                        value={this.state.newBeer.where}
+                                        onChange={this.changeWhereHandler}
+
+                                    />
+
+                                </Col>
+
+                            </FormGroup>
+
+                        </Col>
+
+                        <Col sm={6}>
+
+                            <FormGroup controlId="beerWhen" >
+
+                                <Col componentClass={ControlLabel} sm={2}>
+                                    When
+                			</Col>
+                                <Col sm={10}>
+
+                                    <DateTime
+                                        dateFormat="D MMM YYYY"
+                                        timeFormat={false}
+                                        closeOnSelect={true}
+                                        value={this.state.newBeer.when}
+                                        onChange={this.changeWhenHandler}
+
+                                    />
+
+                                </Col>
+
+                            </FormGroup>
+
+                        </Col>
+
                         <FormGroup controlId="beerRating">
                             <Col componentClass={ControlLabel} sm={2}>
                                 Rating
                 			</Col>
-                            <Col sm={10}>
+                            <Col sm={10} style={{ textAlign: 'left' }}>
 
                                 <StarRatings
-                                    rating={0}
+                                    rating={this.state.newBeer.myRating}
                                     isSelectable={true}
                                     isAggregateRating={false}
-                                    //changeRating={this.changeRating}
+                                    changeRating={
+                                        newRating => {
+
+                                            const newBeer = { ...this.state.newBeer };
+
+                                            if (newRating === newBeer.myRating)
+                                                newBeer.myRating = 0;
+                                            else
+                                                newBeer.myRating = newRating;
+
+                                            this.setState({ newBeer: newBeer });
+
+                                        }
+                                    }
                                     numOfStars={5}
                                     starWidthAndHeight={'20px'}
                                     starRatedColor="gold"
                                     starSelectingHoverColor="gold"//"rgb(220, 209, 41)"
+                                    starEmptyColor="rgb(104,104,104)"
                                 />
                             </Col>
                         </FormGroup>
@@ -354,12 +455,10 @@ class NewBeer extends Component {
                             </Col>
                         </FormGroup>
 
-                        <FormGroup controlId="beerButtons">
-                            <Col smOffset={10} sm={1}>
+                        <FormGroup controlId="beerButtons" style={{ textAlign: 'right' }}>
+                            <Col smOffset={2} sm={10}>
                                 <Button bsStyle="danger" onClick={this.props.cancelButton}>Cancel</Button>
-                            </Col>
-                            <Col sm={1}>
-                                <Button bsStyle="primary" onClick={this.addBeerHandler}>Save</Button>
+                                <Button bsStyle="primary" onClick={this.addBeerHandler} style={{ marginLeft: '20px' }}>Save</Button>
                             </Col>
                         </FormGroup>
 
@@ -367,10 +466,10 @@ class NewBeer extends Component {
 
                 </Col>
                 <Col sm={4}>
-                    <img src={(this.state.newBeer.image === null || this.state.newBeer.image === '') ? beerPlaceHolder : this.state.newBeer.image} width="100%" />
+                    <img src={(this.state.newBeer.image === null || this.state.newBeer.image === '') ? beerPlaceHolder : this.state.newBeer.image} alt={this.state.newBeer.name} width="100%" />
                 </Col>
 
-            </div>
+            </div >
 
         );
 

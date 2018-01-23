@@ -89,8 +89,15 @@ class BeerRating extends Component {
         this.beersRef = base.syncState('users/' + userKey + '/beers', {
             context: this,
             state: "listOfBeers",
-            asArray: true
+            asArray: true,
+            queries: {
+                orderByChild: 'when',
+                limitToLast: 4,
+            }
         });
+
+
+
 
     }
 
@@ -137,7 +144,7 @@ class BeerRating extends Component {
 
         this.setState({ addingNewBeer: addingNewBeer });
 
-        console.log(this.state.addingNewBeer.toString());
+        //console.log(this.state.addingNewBeer.toString());
 
     }
 
