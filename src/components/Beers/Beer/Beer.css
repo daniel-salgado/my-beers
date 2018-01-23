@@ -37,3 +37,7 @@
     font-weight: bold;
     margin: 0 0 5px;
 }
+
+.beer-desc p {
+    margin: 1px 0px;
+}

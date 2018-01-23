@@ -16,7 +16,7 @@ class Beers extends Component {
                         name={beer.name}
                         brewedBy={beer.brewedBy}
                         style={beer.style}
-                        description={beer.description}
+                        comment={beer.comment}
                         image={beer.image}
                         beerClicked={() => this.props.clicked(index)}
                     />

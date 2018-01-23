@@ -65,7 +65,7 @@ class BeerRating extends Component {
             name: '',
             brewedBy: '',
             style: '',
-            description: '',
+            comment: '',
             image: '',
             addedBy: '',
             addedOn: '',
@@ -119,7 +119,7 @@ class BeerRating extends Component {
         newBeer.name = '';
         newBeer.brewedBy = '';
         newBeer.style = '';
-        newBeer.description = '';
+        newBeer.comment = '';
         newBeer.image = '';
         newBeer.addedBy = '';
         newBeer.addedOn = '';
@@ -151,7 +151,7 @@ class BeerRating extends Component {
         newBeer.name = this.state.newBeer.name;
         newBeer.brewedBy = this.state.newBeer.brewedBy;
         newBeer.style = this.state.newBeer.style;
-        newBeer.description = this.state.newBeer.description;
+        newBeer.comment = this.state.newBeer.comment;
         newBeer.image = null;
         newBeer.addedBy = this.props.user.uid;
         newBeer.myRanting = this.state.newBeer.myRanting;
@@ -197,7 +197,7 @@ class BeerRating extends Component {
                     name={beer.name}
                     brewedBy={beer.brewedBy}
                     style={beer.style}
-                    description={beer.description}
+                    comment={beer.comment}
                     image={beer.image}
                     addedBy={beer.addedBy}
                 />

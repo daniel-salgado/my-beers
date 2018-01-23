@@ -1,5 +1,14 @@
+//Custom component Rater: https://github.com/NdYAG/react-rater
+//http://react-component.github.io/rate/
+
+//https://github.com/voronianski/react-star-rating-component
+//https://www.npmjs.com/package/react-star-ratings
+//https://www.npmjs.com/package/react-rater-plus //Does not work
+
 import React from 'react';
 import './Beer.css'
+
+import StarRatings from 'react-star-ratings'
 
 const beer = (props) => {
 
@@ -11,10 +20,22 @@ const beer = (props) => {
             </div>
             <div className="beer-desc">
                 <h2>{props.name}</h2>
-                <p>{props.description}</p>
+
+                <StarRatings
+                    rating={3}
+                    isSelectable={true}
+                    isAggregateRating={false}
+                    //changeRating={this.changeRating}
+                    numOfStars={5}
+                    starWidthAndHeight={'20px'}
+                    starRatedColor="gold"
+                    starSelectingHoverColor="gold"//"rgb(220, 209, 41)"
+                />
+
+                <p>{props.comment}</p>
                 <p><strong>Brewed By: </strong>{props.brewedBy}</p>
                 <p><strong>Style: </strong>{props.style}</p>
-                
+
             </div>
         </div>
     );
