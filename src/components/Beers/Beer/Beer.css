@@ -1,7 +1,7 @@
 .Beer {
     width: 400px;
     height: 150px;
-    margin: 16px auto;
+    margin: 8px;
     text-align: left;
     overflow: hidden;
     /* Add shadows to create the "card" effect */
@@ -9,6 +9,7 @@
     transition: 0.3s;
     border-radius: 5px;
     background: white;    
+    display: inline-block;
 }
 /* On mouse-over, add a deeper shadow */
 .Beer:hover {
@@ -36,6 +37,11 @@
     font-size: 18px;
     font-weight: bold;
     margin: 0 0 5px;
+}
+
+.beer-desc h2 span{
+    font-size: 12px;
+    font-weight: normal;
 }
 
 .beer-desc p {

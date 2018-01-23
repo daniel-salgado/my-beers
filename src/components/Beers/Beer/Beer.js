@@ -19,11 +19,11 @@ const beer = (props) => {
                 <img src={props.image === null ? "http://via.placeholder.com/100x150" : props.image} alt={props.name} height="150px" />
             </div>
             <div className="beer-desc">
-                <h2>{props.name}</h2>
+                <h2>{props.name}<span> • {props.style}</span></h2> 
 
                 <StarRatings
-                    rating={3}
-                    isSelectable={true}
+                    rating={props.myRating}
+                    isSelectable={props.updateRating}
                     isAggregateRating={false}
                     //changeRating={this.changeRating}
                     numOfStars={5}
@@ -32,9 +32,10 @@ const beer = (props) => {
                     starSelectingHoverColor="gold"//"rgb(220, 209, 41)"
                 />
 
+                <p><strong>Where: </strong>Pub Ace</p>
+                <p><strong>When: </strong>Jan 5th 2018</p>
+
                 <p>{props.comment}</p>
-                <p><strong>Brewed By: </strong>{props.brewedBy}</p>
-                <p><strong>Style: </strong>{props.style}</p>
 
             </div>
         </div>
@@ -47,3 +48,10 @@ const beer = (props) => {
 
 export default beer;
 
+/*
+
+                <p><strong>Brewer: </strong>{props.brewedBy}</p>
+                <p><strong>Style: </strong>{props.style}</p>
+
+
+*/

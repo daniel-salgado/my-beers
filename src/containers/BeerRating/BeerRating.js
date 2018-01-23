@@ -200,6 +200,7 @@ class BeerRating extends Component {
                     comment={beer.comment}
                     image={beer.image}
                     addedBy={beer.addedBy}
+                    myRating={beer.myRating}
                 />
             ),
         };
@@ -215,7 +216,12 @@ class BeerRating extends Component {
         //console.log('[BeerRating.js] render()', this.props.user);
         //this.getMyBeersHandler();
 
-        const beers = (<Beers listOfBeers={this.state.listOfBeers} clicked={this.showBeerDetailsHandler} />);
+        const beers = (
+            <Beers
+                listOfBeers={this.state.listOfBeers}
+                clicked={this.showBeerDetailsHandler}
+                updateRating={false} />
+        );
 
         let newBeer = null;
 

@@ -7,6 +7,10 @@ import { Form, Col, FormGroup, ControlLabel, FormControl, Button } from 'react-b
 import { AsyncTypeahead } from 'react-bootstrap-typeahead'; // ES2015
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { isArray } from 'util';
+import StarRatings from 'react-star-ratings'
+
+import beerPlaceHolder from '../../../assets/images/placeholder.png'
+
 
 class NewBeer extends Component {
 
@@ -169,24 +173,23 @@ class NewBeer extends Component {
 
     }
 
+    //#endregion Methods Handler
+
     render() {
 
-        //console.log('[NewBeer.js render()] ', this.state.newBeer);
+        console.log('[NewBeer.js render()] ', this.state.newBeer);
         //console.table(this.state.newBeer);
 
         return (
 
-
             <div className="container">
                 <Col sm={8}>
-
                     <Form horizontal >
 
                         <FormGroup controlId="beerName">
                             <Col componentClass={ControlLabel} sm={2}>
-
                                 Beer Name:
-                    </Col>
+                            </Col>
                             <Col sm={10}>
                                 <AsyncTypeahead
                                     isLoading={this.state.isLoading}
@@ -311,11 +314,32 @@ class NewBeer extends Component {
                             </Col>
                         </FormGroup>
 
+                        <hr />
+                        <FormGroup controlId="beerRating">
+                            <Col componentClass={ControlLabel} sm={2}>
+                                Rating
+                			</Col>
+                            <Col sm={10}>
+
+                                <StarRatings
+                                    rating={0}
+                                    isSelectable={true}
+                                    isAggregateRating={false}
+                                    //changeRating={this.changeRating}
+                                    numOfStars={5}
+                                    starWidthAndHeight={'20px'}
+                                    starRatedColor="gold"
+                                    starSelectingHoverColor="gold"//"rgb(220, 209, 41)"
+                                />
+                            </Col>
+                        </FormGroup>
+
                         <FormGroup controlId="beerComment">
                             <Col componentClass={ControlLabel} sm={2}>
                                 Comment
-        			</Col>
+                			</Col>
                             <Col sm={10}>
+
                                 <FormControl
                                     name="comment"
                                     placeholder="What do you think about this beer?"
@@ -340,11 +364,12 @@ class NewBeer extends Component {
 
                 </Col>
                 <Col sm={4}>
-                    <img src={this.state.newBeer.image} width="100%" />
+                    <img src={(this.state.newBeer.image === null || this.state.newBeer.image === '') ? beerPlaceHolder : this.state.newBeer.image} width="100%" />
+
+
                 </Col>
 
             </div>
-
 
         );
 

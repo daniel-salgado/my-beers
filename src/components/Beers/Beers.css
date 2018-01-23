@@ -1,8 +1,4 @@
 .Beers {
     display: inline-block;
-    margin: 0 10px;
-    height: max-content;
-    width: max-content;
-    z-index: 400;
-    
+    width: 100%;
 }

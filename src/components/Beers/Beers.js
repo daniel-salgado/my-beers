@@ -8,21 +8,25 @@ class Beers extends Component {
 
         //console.log('[Beers.js]', this.props);
 
-        return this.props.listOfBeers.map((beer, index) => {
+        const beers = this.props.listOfBeers.map((beer, index) => {
 
-            return <div className="Beers" key={beer.key}>
-                    <Beer
-                        key={beer.id}
-                        name={beer.name}
-                        brewedBy={beer.brewedBy}
-                        style={beer.style}
-                        comment={beer.comment}
-                        image={beer.image}
-                        beerClicked={() => this.props.clicked(index)}
-                    />
-            </div>
-
+            return <Beer
+                key={beer.id}
+                name={beer.name}
+                brewedBy={beer.brewedBy}
+                style={beer.style}
+                comment={beer.comment}
+                image={beer.image}
+                myRating={beer.myRating}
+                beerClicked={() => this.props.clicked(index)}
+            />
         });
+
+        return (
+            <div className="Beers">
+                {beers}
+            </div>
+        );
 
     }
 
