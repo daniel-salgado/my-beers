@@ -5,6 +5,7 @@ import NewBeer from '../../components/Beers/NewBeer/NewBeer';
 import Beers from '../../components/Beers/Beers';
 import Dialog from '../../components/UI/Modal/Dialog';
 import Beer from '../../components/Beers/Beer/Beer';
+import BeerDetails from '../../components/Beers/BeerDetails/BeerDetails';
 import { base } from '../../database/Database';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
 
@@ -141,13 +142,14 @@ class BeerRating extends Component {
 
         const beer = { ...this.state.listOfBeers[beerIndex] };
 
-        //console.log('[BeerRating.js] showBeerDetailsHandler() index:', beer);
+        console.log('[BeerRating.js] showBeerDetailsHandler() index:', beer);
 
         const modal = {
             title: beer.name,
             body: (
-                <Beer
-                    key={beer.id}
+                <BeerDetails
+                    id={beer.key}
+                    beerKey={beer.key}
                     name={beer.name}
                     brewedBy={beer.brewedBy}
                     style={beer.style}
@@ -155,6 +157,7 @@ class BeerRating extends Component {
                     image={beer.image}
                     addedBy={beer.addedBy}
                     myRating={beer.myRating}
+                    user={this.props.user.uid}
                 />
             ),
         };
@@ -163,6 +166,35 @@ class BeerRating extends Component {
 
     };
 
+    /*
+        updateBeerRating = (beerIndex, newRating) => {
+    
+            const key = user.uid;
+    
+            //Check if the user already exists
+            base.fetch('users/' + user.uid, {
+                context: this,
+                asArray: false //Will return the object
+            }).then(data => {
+    
+                //console.log('[Login.js] addUpdateUserHandler() uid', user.uid);
+                //console.table(data);
+    
+                if (data.countLogs === null || data.countLogs === undefined) {
+                    ref.child('users').child(key).set(loggedUser);
+    
+                } else {
+    
+                    loggedUser.countLogs = data.countLogs + 1;
+                    ref.child('users').child(key).update(loggedUser);
+    
+                }
+    
+            }).catch(error => {/*handle error });
+    
+    
+        }
+    */
     //#endregion
 
     render() {
