@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { app, googleProvider, base, ref } from '../../database/Database'
+import { app, googleProvider, base, ref } from '../../../database/Database'
 
 const loginStyles = {
     width: "90%",

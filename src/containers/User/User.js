@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import BeerRating from '../BeerRating/BeerRating';
 import { base, app } from '../../database/Database';
-import Login from '../Auth/Login';
+import Login from '../Auth/Login/Login';
 import './User.css';
 class User extends Component {
 
@@ -79,10 +79,12 @@ class User extends Component {
 
     render() {
 
+        let classes = "User";
 
         let mainContent = null;
 
         if (this.state.authenticated && !this.state.loading) {
+            classes = "User UserLogged";
             mainContent = (<BeerRating user={this.state.user} logOut={() => this.userLogoutHnadler()} />);
         }
         else {
@@ -90,7 +92,7 @@ class User extends Component {
         }
 
         return (
-            <div className="User">
+            <div className={classes}>
                 {mainContent}
             </div>
         );
