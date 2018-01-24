@@ -38,9 +38,17 @@ class NewBeer extends Component {
             addedOn: '',
             myRating: 0,
             where: '',
-            when: '',
+            when: moment().format("D MMM YYYY"),
         },
         selectedStyle: [],
+        formValidation: {
+            name: null,
+            brewedBy: null,
+        },
+        formIsValid: false,
+
+
+
     }
 
 
@@ -57,35 +65,22 @@ class NewBeer extends Component {
 
     //#region Event Handler
 
-    changeBrewerHandler = (event) => {
+    changeStyleHandler = (event) => {
 
-        //console.log('[NewBeer.js] changeBrewerHandler', event.target.value);
+        console.log('[NewBeer.js] changeStyleHandler', event);
+
+        const newBeer = { ...this.state.newBeer };
+
+        newBeer.style = event.target.value;
+
+        this.setState({ newBeer: newBeer });
+    }
+
+    changeBrewerHandler = (event) => {
 
         const newBeer = { ...this.state.newBeer };
 
         newBeer.brewedBy = event.target.value;
-
-        this.setState({ newBeer: newBeer });
-    }
-
-    changeStyleHandler = (value) => {
-
-        console.log('[NewBeer.js] changeStyleHandler', value);
-
-        const newBeer = { ...this.state.newBeer };
-
-        newBeer.style = value;
-
-        this.setState({ newBeer: newBeer });
-    }
-
-    changeBrewerHandler = (value) => {
-
-        console.log('[NewBeer.js] changeStyleHandler', value);
-
-        const newBeer = { ...this.state.newBeer };
-
-        newBeer.brewedBy = value;
 
         this.setState({ newBeer: newBeer });
     }
@@ -109,20 +104,6 @@ class NewBeer extends Component {
         const newBeer = { ...this.state.newBeer };
 
         newBeer.where = event.target.value;
-
-        this.setState({ newBeer: newBeer });
-
-    }
-
-    changeWhenHandler = (event) => {
-
-        const fixedDate = moment(event).format("D MMM YYYY");
-
-        console.log('[NewBeer.js] changeWhenHandler', event.format("D MMM YYYY"));
-
-        const newBeer = { ...this.state.newBeer };
-
-        newBeer.when = fixedDate;
 
         this.setState({ newBeer: newBeer });
 
@@ -176,14 +157,99 @@ class NewBeer extends Component {
 
     }
 
+    validFormHandler() {
+
+        let formValidation = { ...this.state.formValidation };
+        let formIsValid = true;
+
+        if (this.state.newBeer.name.length > 0) {
+            formValidation.name = "success";
+        }
+        else {
+            formValidation.name = "error";
+            formIsValid = false;
+        }
+
+        if (this.state.newBeer.brewedBy.length > 0) {
+            formValidation.brewedBy = "success";
+        }
+        else {
+            formValidation.brewedBy = "error";
+            formIsValid = false;
+        }
+
+        if (this.state.newBeer.style.length > 0) {
+            formValidation.style = "success";
+        }
+        else {
+            formValidation.style = "error";
+            formIsValid = false;
+        }
+
+        if (this.state.newBeer.comment.length > 0) {
+            formValidation.comment = "success";
+        }
+        else {
+            formValidation.comment = "error";
+            formIsValid = false;
+        }
+
+        this.setState({ formValidation: formValidation, formIsValid: formIsValid });
+
+    }
+
     addBeerHandler = () => {
 
+        let isValid = true;
+
         this.setState({ addingNewBeer: true });
+
+        //this.validFormHandler();
+
+        let formValidation = { ...this.state.formValidation };
+
+        if (this.state.newBeer.name.length > 0) {
+            formValidation.name = "success";
+        }
+        else {
+            formValidation.name = "error";
+            isValid = false;
+        }
+
+        if (this.state.newBeer.brewedBy.length > 0) {
+            formValidation.brewedBy = "success";
+        }
+        else {
+            formValidation.brewedBy = "error";
+            isValid = false;
+        }
+
+        if (this.state.newBeer.style.length > 0) {
+            formValidation.style = "success";
+        }
+        else {
+            formValidation.style = "error";
+            isValid = false;
+        }
+
+        if (this.state.newBeer.comment.length > 0) {
+            formValidation.comment = "success";
+        }
+        else {
+            formValidation.comment = "error";
+            isValid = false;
+        }
+
+        this.setState({ formValidation: formValidation });
+
+
+        if (!isValid)
+            return;
 
         //console.log(this.state.newBeer);
 
         let newBeer = [...this.state.newBeer];
-
+        newBeer.id = this.state.newBeer.id;
         newBeer.name = this.state.newBeer.name;
         newBeer.brewedBy = this.state.newBeer.brewedBy;
         newBeer.style = this.state.newBeer.style;
@@ -208,7 +274,8 @@ class NewBeer extends Component {
             }
         });
 
-        this.cleanNewBeerState();
+        //this.cleanNewBeerState();
+        this.props.cancelButton();
 
     }
 
@@ -225,9 +292,9 @@ class NewBeer extends Component {
                 <Col sm={8}>
                     <Form horizontal >
 
-                        <FormGroup controlId="beerName">
+                        <FormGroup controlId="beerName" validationState={this.state.formValidation.name}>
                             <Col componentClass={ControlLabel} sm={2}>
-                                Beer Name:
+                                Name:
                             </Col>
                             <Col sm={10}>
                                 <AsyncTypeahead
@@ -265,12 +332,6 @@ class NewBeer extends Component {
                                                     }
 
                                                     newBeer.brewedBy = changedTxt[0].breweries[0].name;
-
-                                                    this.setState({ newBeer: newBeer });
-
-                                                    //console.log('passou por aqui');
-                                                    //console.log(newBeer);
-                                                    //console.log(this.state.newBeer);
 
                                                     this.setState({ newBeer: newBeer });
 
@@ -322,7 +383,7 @@ class NewBeer extends Component {
                             </Col>
                         </FormGroup>
 
-                        <FormGroup controlId="brewedBy">
+                        <FormGroup controlId="brewedBy" validationState={this.state.formValidation.brewedBy}>
                             <Col componentClass={ControlLabel} sm={2}>
                                 Brewed by
                             </Col>
@@ -338,7 +399,7 @@ class NewBeer extends Component {
                             </Col>
                         </FormGroup>
 
-                        <FormGroup controlId="beerStyle">
+                        <FormGroup controlId="beerStyle" validationState={this.state.formValidation.style}>
                             <Col componentClass={ControlLabel} sm={2}>
                                 Style
 			                 </Col>
@@ -346,7 +407,7 @@ class NewBeer extends Component {
                                 <FormControl
                                     type="text"
                                     placeholder="Style..."
-                                    onChange={this.changeCommentHandler}
+                                    onChange={this.changeStyleHandler}
                                     value={this.state.newBeer.style}
                                 />
 
@@ -355,53 +416,24 @@ class NewBeer extends Component {
 
                         <hr />
 
+                        <FormGroup controlId="beerWhere">
 
-                        <Col sm={6}>
+                            <Col componentClass={ControlLabel} sm={2}>Where</Col>
 
-                            <FormGroup controlId="beerWhere">
+                            <Col sm={10}>
 
-                                <Col componentClass={ControlLabel} sm={2}>Where</Col>
+                                <FormControl
+                                    name="where"
+                                    type="text"
+                                    placeholder="Where?"
+                                    value={this.state.newBeer.where}
+                                    onChange={this.changeWhereHandler}
 
-                                <Col sm={10}>
+                                />
 
-                                    <FormControl
-                                        name="where"
-                                        type="text"
-                                        placeholder="Where?"
-                                        value={this.state.newBeer.where}
-                                        onChange={this.changeWhereHandler}
+                            </Col>
 
-                                    />
-
-                                </Col>
-
-                            </FormGroup>
-
-                        </Col>
-
-                        <Col sm={6}>
-
-                            <FormGroup controlId="beerWhen" >
-
-                                <Col componentClass={ControlLabel} sm={2}>
-                                    When
-                			</Col>
-                                <Col sm={10}>
-
-                                    <DateTime
-                                        dateFormat="D MMM YYYY"
-                                        timeFormat={false}
-                                        closeOnSelect={true}
-                                        value={this.state.newBeer.when}
-                                        onChange={this.changeWhenHandler}
-
-                                    />
-
-                                </Col>
-
-                            </FormGroup>
-
-                        </Col>
+                        </FormGroup>
 
                         <FormGroup controlId="beerRating">
                             <Col componentClass={ControlLabel} sm={2}>
@@ -436,7 +468,7 @@ class NewBeer extends Component {
                             </Col>
                         </FormGroup>
 
-                        <FormGroup controlId="beerComment">
+                        <FormGroup controlId="beerComment" validationState={this.state.formValidation.comment}>
                             <Col componentClass={ControlLabel} sm={2}>
                                 Comment
                 			</Col>
@@ -478,25 +510,3 @@ class NewBeer extends Component {
 }
 
 export default NewBeer
-
-
-
-/*
-
-
-                <FormGroup controlId="beerName">
-                    <Col componentClass={ControlLabel} sm={2}>
-                        Beer Name:
-                    </Col>
-                    <Col sm={4}>
-                        <FormControl
-                            type="text"
-                            name="name"
-                            placeholder="Name of the beer"
-                            value={this.props.name}
-                            onChange={this.onChange} />
-                    </Col>
-                </FormGroup>
-
-
-                */

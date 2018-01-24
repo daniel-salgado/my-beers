@@ -33,7 +33,7 @@ const toolbar = (props) => {
             <Navbar.Collapse>
                 <Nav>
                     <NavItem eventKey={1} onClick={props.listBeerClicked}>My Beer List</NavItem>
-                    <NavItem eventKey={2} onClick={props.addBeer}>New Beer</NavItem>
+                    <NavItem eventKey={2} onClick={props.addBeer}>Check-in New Beer</NavItem>
                 </Nav>
                 <Nav pullRight>
                     {dropdownUser}

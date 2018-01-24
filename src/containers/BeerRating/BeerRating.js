@@ -92,7 +92,6 @@ class BeerRating extends Component {
             asArray: true,
             queries: {
                 orderByChild: 'when',
-                limitToLast: 4,
             }
         });
 
@@ -118,26 +117,7 @@ class BeerRating extends Component {
 
     //#region Handlers
 
-    cleanNewBeerState() {
-
-        let newBeer = [...this.state.newBeer];
-
-        newBeer.id = '';
-        newBeer.name = '';
-        newBeer.brewedBy = '';
-        newBeer.style = '';
-        newBeer.comment = '';
-        newBeer.image = '';
-        newBeer.addedBy = '';
-        newBeer.addedOn = '';
-        newBeer.myRanting = '';
-
-        this.setState({ newBeer: newBeer, addingNewBeer: false });
-
-        //console.log('[BeerRating.js cleanNewBeerState()] ', newBeer);
-
-    }
-
+   
     showAddBeerFormHandler = () => {
 
         const addingNewBeer = !this.state.addingNewBeer;
@@ -145,39 +125,6 @@ class BeerRating extends Component {
         this.setState({ addingNewBeer: addingNewBeer });
 
         //console.log(this.state.addingNewBeer.toString());
-
-    }
-
-    addBeerHandler = () => {
-
-        this.setState({ addingNewBeer: true });
-
-        let newBeer = [...this.state.newBeer];
-
-        newBeer.key = [...this.state.listOfBeers].length + 1;
-        newBeer.name = this.state.newBeer.name;
-        newBeer.brewedBy = this.state.newBeer.brewedBy;
-        newBeer.style = this.state.newBeer.style;
-        newBeer.comment = this.state.newBeer.comment;
-        newBeer.image = null;
-        newBeer.addedBy = this.props.user.uid;
-        newBeer.myRanting = this.state.newBeer.myRanting;
-        //newBeer.addedOn = Date.now();
-
-        this.cleanNewBeerState();
-
-        const immediatelyAvailableReference = base.push('users/' + newBeer.addedBy + '/beers', {
-            data: { newBeer },
-            then(err) {
-                if (!err) {
-
-                    newBeer.key = immediatelyAvailableReference.key;
-                    ref.child('users/' + newBeer.addedBy + '/beers/' + newBeer.key).set(newBeer);
-                    ref.child('beersCatalog/beers/' + newBeer.key).set(newBeer);
-
-                }
-            }
-        });
 
     }
 
@@ -238,7 +185,6 @@ class BeerRating extends Component {
 
                 <NewBeer
                     newBeer={this.state.newBeer}
-                    clicked={this.addBeerHandler}
                     cancelButton={this.hideModalHandler}
                     user={this.props.user}
                     addingNewBeer={this.state.addingNewBeer}
@@ -262,7 +208,7 @@ class BeerRating extends Component {
         return (
 
             <div className="BeerRating">
-                <Toolbar
+                <Toolbar 
                     logOut={this.props.logOut}
                     user={this.props.user}
                     addBeer={this.showAddBeerFormHandler}
