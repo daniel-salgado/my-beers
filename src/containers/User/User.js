@@ -20,7 +20,7 @@ class User extends Component {
             if (user) {
 
                 const loggedUser = {
-                    name: user.displayName,
+                    name: user.displayName !== null ? user.displayName : user.email,
                     email: user.email,
                     phone: user.phoneNumber,
                     creationTime: user.metadata.creationTime,

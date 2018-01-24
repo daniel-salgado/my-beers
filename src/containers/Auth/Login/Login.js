@@ -1,32 +1,27 @@
+//https://medium.com/@harittweets/sign-in-with-google-with-react-and-firebase-81076135b65d
+
 import React, { Component } from 'react'
 import { app, googleProvider, base, ref } from '../../../database/Database'
-
-const loginStyles = {
-    width: "90%",
-    maxWidth: "315px",
-    margin: "20px auto",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
-    padding: "10px",
-};
+import './Login.css';
+import { Form, Col, FormGroup,  FormControl, Button, InputGroup, Glyphicon, Alert } from 'react-bootstrap';
 
 class Login extends Component {
-    constructor() {
-        super()
-        this.authWithGoogle = this.authWithGoogle.bind(this);
-        this.authWithEmailPassword = this.authWithEmailPassword.bind(this);
 
-        this.state = {
-            redirect: false,
-            user: null,
-            authenticated: false
-        };
-    }
+    state = {
+        redirect: false,
+        user: null,
+        authenticated: false,
+        email: '',
+        password: '',
+        error: null,
+        loading: null,
+        isTyping: false,
+    };
 
     addUpdateUserHandler(user) {
 
         const loggedUser = {
-            name: user.displayName,
+            name: user.displayName !== null ? user.displayName : user.email,
             email: user.email,
             phone: user.phoneNumber,
             creationTime: user.metadata.creationTime,
@@ -50,7 +45,7 @@ class Login extends Component {
             //console.log('[Login.js] addUpdateUserHandler() uid', user.uid);
             //console.table(data);
 
-            if (data.length === 0) {
+            if (data.countLogs === null || data.countLogs === undefined) {
                 ref.child('users').child(key).set(loggedUser);
 
             } else {
@@ -73,12 +68,9 @@ class Login extends Component {
                 if (error) {
                     //this.toaster.show({ intent: Intent.DANGER, message: "Unable to sign in with Google" })
                     alert("Unable to sign in with Google");
+                    this.setState({ error: error.message, isTyping: false })
                 } else {
                     this.setState({ redirect: true, authenticated: true });
-                    //console.log('[Login.js] authWithGoogle().result', result);
-                    //console.log('[Login.js] authWithGoogle().result.user', result.user);
-                    //console.log('[Login.js] authWithGoogle().result.credential', result.credential);
-                    //console.log('[Login.js] authWithGoogle().auth.currentUser', auth.currentUser);
 
                     this.addUpdateUserHandler(result.user);
 
@@ -86,20 +78,143 @@ class Login extends Component {
             });
     }
 
-    authWithEmailPassword(event) {
-        event.preventDefault()
+    authWithEmailPassword() {
         /*console.log("We're authing with password")
         console.table([{
             email: this.emailInput.value,
             password: this.passwordInput.value,
         }])*/
+
+        const email = this.state.email;
+        const password = this.state.password;
+
+        app.auth().signInWithEmailAndPassword(email, password)
+            .then((result, error) => {
+
+                this.setState({ error: null, loading: false });
+
+                this.addUpdateUserHandler(result);
+
+
+            })
+            .catch((error) => {
+
+                if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-email') {
+                    console.info(error);
+
+                    this.setState({ error: error.message, loading: false });
+
+                    return;
+                }
+
+                app.auth().createUserWithEmailAndPassword(email, password)
+                    .then((result, error) => {
+                        this.setState({ error: null, loading: false });
+                        this.addUpdateUserHandler(result);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+            });
+
     }
 
     render() {
 
 
+        let displayAlert = null;
+
+
+        if (this.state.error !== null) {
+
+            displayAlert = (
+
+                <Alert bsStyle="warning">
+                    <p><strong>Holy guacamole!</strong> {this.state.error}</p>
+                </Alert>
+
+            );
+
+        }
+
 
         return (
+
+            <div>
+
+                {displayAlert}
+
+                <div className="login">
+
+                    <Form horizontal>
+                        <FormGroup controlId="email" >
+                            <Col sm={12}>
+                                <InputGroup>
+                                    <InputGroup.Addon>
+                                        <Glyphicon glyph="envelope" />
+                                    </InputGroup.Addon>
+                                    <FormControl
+                                        type="email"
+                                        placeholder="Email"
+                                        onChange={
+                                            event => {
+                                                this.setState({ email: event.target.value, isTyping: true });
+                                            }
+                                        }
+                                        value={this.state.email}
+                                    />
+                                </InputGroup>
+                            </Col>
+
+                        </FormGroup>
+
+                        <FormGroup controlId="password" >
+                            <Col sm={12}>
+                                <InputGroup>
+                                    <InputGroup.Addon>
+                                        <Glyphicon glyph="lock" />
+                                    </InputGroup.Addon>
+                                    <FormControl
+                                        type="password"
+                                        placeholder="Password"
+                                        onChange={
+                                            event => {
+                                                this.setState({ password: event.target.value });
+                                            }
+                                        }
+                                        value={this.state.password}
+                                    />
+                                </InputGroup>
+                            </Col>
+                        </FormGroup>
+
+                        <FormGroup controlId="signin">
+                            <Col sm={12}>
+                                <Button bsStyle="primary" onClick={() => this.authWithEmailPassword()}>Sign In</Button>
+                                <hr />
+                                <Button bsStyle="danger" onClick={() => this.authWithGoogle()}>Sign in with Goolge</Button>
+                            </Col>
+                        </FormGroup>
+
+                    </Form>
+
+                </div>
+
+            </div>
+
+
+        )
+
+    }
+
+}
+
+export default Login
+
+/*
+
+return (
             <div style={loginStyles}>
                 <button style={{ width: "100%" }} className="pt-button pt-intent-primary" onClick={() => this.authWithGoogle()}>Log In with Google</button>
                 <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
@@ -121,9 +236,4 @@ class Login extends Component {
             </div>
         )
 
-
-
-    }
-}
-
-export default Login
+*/

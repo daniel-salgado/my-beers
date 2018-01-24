@@ -11,8 +11,6 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { isArray } from 'util';
 import StarRatings from 'react-star-ratings';
 
-import * as DateTime from 'react-datetime';
-import 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
 
 

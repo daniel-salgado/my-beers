@@ -5,7 +5,7 @@ import NewBeer from '../../components/Beers/NewBeer/NewBeer';
 import Beers from '../../components/Beers/Beers';
 import Dialog from '../../components/UI/Modal/Dialog';
 import Beer from '../../components/Beers/Beer/Beer';
-import { base, ref } from '../../database/Database';
+import { base } from '../../database/Database';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
 
 //Temporary
@@ -117,7 +117,7 @@ class BeerRating extends Component {
 
     //#region Handlers
 
-   
+
     showAddBeerFormHandler = () => {
 
         const addingNewBeer = !this.state.addingNewBeer;
@@ -208,7 +208,7 @@ class BeerRating extends Component {
         return (
 
             <div className="BeerRating">
-                <Toolbar 
+                <Toolbar
                     logOut={this.props.logOut}
                     user={this.props.user}
                     addBeer={this.showAddBeerFormHandler}

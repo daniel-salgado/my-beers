@@ -1,0 +1,26 @@
+.login {
+  max-width: 500px;
+  min-width: 400px;
+  margin: 12px auto;
+
+  background-color: rgba(0, 0, 0, 0.5);
+  border: solid 1px rgba(0,0,0,0.2);
+  border-radius: 10px;
+  box-shadow: 0 1px 12px rgba(0,0,0,0.5);
+  padding: 50px 30px 20px;
+ 
+}
+
+.login Button {
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 20px;
+    text-align: center;
+    height: 55px;
+}
+
+
+.login .login-form .input-group {
+  margin-top: 10px;
+}
+
