@@ -37,6 +37,7 @@ class NewBeer extends Component {
             myRating: 0,
             where: '',
             when: moment().format("D MMM YYYY"),
+            description: '',
         },
         selectedStyle: [],
         formValidation: {
@@ -122,6 +123,7 @@ class NewBeer extends Component {
         newBeer.myRating = 0;
         newBeer.where = '';
         newBeer.when = '';
+        newBeer.description = '';
 
         this.setState({ newBeer: newBeer });
 
@@ -257,6 +259,7 @@ class NewBeer extends Component {
         newBeer.myRating = this.state.newBeer.myRating;
         newBeer.where = this.state.newBeer.where;
         newBeer.when = this.state.newBeer.when;
+        newBeer.description = this.state.newBeer.description;
         //newBeer.addedOn = Date.now();
 
         const immediatelyAvailableReference = base.push('users/' + newBeer.addedBy + '/beers', {
@@ -317,10 +320,12 @@ class NewBeer extends Component {
                                             if (isArray(changedTxt)) {
                                                 if (changedTxt[0] !== undefined) {
 
-                                                    const newBeer = { ...this.state.newBeer };
+                                                    const newBeer = this.state.newBeer;
                                                     newBeer.id = changedTxt[0].id;
                                                     newBeer.name = changedTxt[0].name;
                                                     newBeer.style = changedTxt[0].style.name;
+
+                                                    newBeer.description = changedTxt[0].description !== undefined ? changedTxt[0].description : 'No description available';
 
                                                     if (changedTxt[0].labels !== undefined) {
                                                         newBeer.image = changedTxt[0].labels.medium;
@@ -332,6 +337,9 @@ class NewBeer extends Component {
                                                     newBeer.brewedBy = changedTxt[0].breweries[0].name;
 
                                                     this.setState({ newBeer: newBeer });
+
+                                                    console.log(newBeer);
+                                                    console.log(this.state.newBeer);
 
                                                 }
                                             }

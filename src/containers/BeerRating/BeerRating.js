@@ -4,7 +4,6 @@ import './BeerRating.css'
 import NewBeer from '../../components/Beers/NewBeer/NewBeer';
 import Beers from '../../components/Beers/Beers';
 import Dialog from '../../components/UI/Modal/Dialog';
-import Beer from '../../components/Beers/Beer/Beer';
 import BeerDetails from '../../components/Beers/BeerDetails/BeerDetails';
 import { base } from '../../database/Database';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
@@ -70,7 +69,8 @@ class BeerRating extends Component {
             image: '',
             addedBy: '',
             addedOn: '',
-            myRanting: ''
+            myRanting: '',
+            description: '',
         },
         addingNewBeer: false,
         showBeerDetail: false,
@@ -142,13 +142,13 @@ class BeerRating extends Component {
 
         const beer = { ...this.state.listOfBeers[beerIndex] };
 
-        console.log('[BeerRating.js] showBeerDetailsHandler() index:', beer);
+        //console.log('[BeerRating.js] showBeerDetailsHandler() index:', beer);
 
         const modal = {
             title: beer.name,
             body: (
                 <BeerDetails
-                    id={beer.key}
+                    id={beer.id}
                     beerKey={beer.key}
                     name={beer.name}
                     brewedBy={beer.brewedBy}
@@ -158,6 +158,9 @@ class BeerRating extends Component {
                     addedBy={beer.addedBy}
                     myRating={beer.myRating}
                     user={this.props.user.uid}
+                    when={beer.when}
+                    where={beer.where}
+                    description={beer.description}
                 />
             ),
         };

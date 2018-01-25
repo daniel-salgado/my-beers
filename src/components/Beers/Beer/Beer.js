@@ -9,6 +9,8 @@ import React from 'react';
 import './Beer.css'
 
 import StarRatings from 'react-star-ratings'
+import beerImagePlaceHolder from '../../../assets/images/placeholder.png';
+
 
 const beer = (props) => {
 
@@ -16,7 +18,7 @@ const beer = (props) => {
         <div className="Beer"
             onClick={props.beerClicked}>
             <div className="beer-img">
-                <img src={props.image === null ? "http://via.placeholder.com/100x150" : props.image} alt={props.name} height="150px" />
+                <img src={(props.image === null || props.image === undefined) ? beerImagePlaceHolder : props.image} alt={props.name} height="150px" />
             </div>
             <div className="beer-desc">
                 <h2>{props.name}<span> • {props.style}</span></h2>
