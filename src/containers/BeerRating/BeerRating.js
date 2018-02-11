@@ -91,9 +91,7 @@ class BeerRating extends Component {
             context: this,
             state: "listOfBeers",
             asArray: true,
-            queries: {
-                orderByChild: 'when',
-            }
+           
         });
 
 
